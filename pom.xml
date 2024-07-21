@@ -7,6 +7,10 @@
     <groupId>org.example</groupId>
     <artifactId>Sweet_M_Sys</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+
+
+
 <dependencies>
     <dependency>
         <groupId>junit</groupId>
