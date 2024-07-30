@@ -19,8 +19,10 @@ public class LoginPagec {
 
     @Given("the person is on the login page")
     public void the_person_is_on_the_login_page() {
-        app.is_in_loginpage=true;
-        Assert.assertTrue(app.is_in_loginpage);
+//        app.is_in_loginpage=true;
+//        Assert.assertTrue(app.is_in_loginpage);
+        app.goToLoginPage();
+
     }
 
     @Given("the list of valid users includes:")

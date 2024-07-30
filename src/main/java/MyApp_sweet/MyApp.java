@@ -157,14 +157,16 @@ public class MyApp {
         linkName = linkName.trim();
         switch (linkName) {
             case "Sign_up":
-
                 this.is_in_signuppage = true;
                 break;
-
+            case "Forgot Password":
+                this.is_in_forgotpasswordpage = true;
+                break;
             default:
                 throw new IllegalArgumentException("Unknown link: " + linkName);
         }
     }
+
 
 
 
@@ -299,6 +301,51 @@ public class MyApp {
     private boolean containsSpecialCharacter(String password) {
         return password.matches(".*[!@#$%^&*()].*");
     }
+
+
+
+
+
+    public void emailForPassChanging(String email) {
+        this.email = email;
+    }
+
+
+    public void submitForgotPass() {
+        validationErrors.clear();
+        if (email == null || email.isEmpty()) {
+            validationErrors.add("Email field cannot be empty");
+            message = "Email field cannot be empty";
+            exppage = "forgot_password_page";
+        } else if (!listvalidUsers.values().stream().anyMatch(userInfo -> userInfo.email.equals(email))) {
+            validationErrors.add("No account found with that email");
+            message = "No account found with that email";
+            exppage = "forgot_password_page";
+        } else {
+            message = "A password reset link has been sent to your email";
+            exppage = "login_page";
+        }
+        logger.info("Password reset request: " + validationErrors);
+    }
+
+
+
+
+
+
+    public boolean isInLoginPage() {
+        return "login_page".equals(currentPage);
+    }
+
+    public void goToLoginPage() {
+        currentPage = "login_page";
+    }
+
+    public String getCurrentPage() {
+        return currentPage;
+    }
+
+
 
 
 }
