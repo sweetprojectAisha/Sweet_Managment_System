@@ -10,7 +10,10 @@ public class MyApp {
     private List<String> validationErrors = new ArrayList<>();
     public boolean is_in_loginpage = false;
     public boolean is_in_signuppage = false;
+    public boolean is_in_forgotpasswordpage = false;
+
     private Map<String, UserInfo> listvalidUsers = new HashMap<String, UserInfo>();
+    private String currentPage;
     private String errorMessage;
     private String enteredUname;
     private String enteredPass;
@@ -148,6 +151,27 @@ public class MyApp {
 //
 //        System.out.println("Message: " + message); // Debugging statement
 //    }
+
+
+    public void clickLink(String linkName) {
+        linkName = linkName.trim();
+        switch (linkName) {
+            case "Sign_up":
+
+                this.is_in_signuppage = true;
+                break;
+
+            default:
+                throw new IllegalArgumentException("Unknown link: " + linkName);
+        }
+    }
+
+
+
+
+
+
+
 
     public void submitSignup() {
         validationErrors.clear();

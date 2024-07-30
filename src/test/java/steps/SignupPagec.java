@@ -64,7 +64,10 @@ public class SignupPagec {
         }
     }
 
-
+    @When("the user clicks on the {string} link")
+    public void the_user_clicks_on_the_link(String link) {
+        app.clickLink(link);
+    }
 
 
 

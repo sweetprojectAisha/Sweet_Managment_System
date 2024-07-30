@@ -8,6 +8,7 @@ Feature: Sign_up page
       | validuser | validemail | 0599873421 | 21  | 12345678a@ |
 
   Scenario Outline: Sign_up with different details
+    When the user clicks on the "Sign_up " link
     When the user fills in sign_up form with:
       | name      | email              | phone      | age | password    | confPassword  |
       | <name>  | <email>          | <phone>  | <age> | <password> | <confPassword> |
@@ -28,6 +29,7 @@ Feature: Sign_up page
       | newuser6  | newemail6@mail.com| 0594444444  | 20  | passWord6@  | passWord6    | Password should equal confirm password    | sign_up_page  |
 
   Scenario Outline: Sign_up with empty fields
+    When the user clicks on the "Sign_up" link
     When the user fills in sign_up form with:
       | name      | email             | phone       | age | password    | confPassword  |
       | <name>  | <email>         | <phone>   | <age> | <password> | <confPassword> |
