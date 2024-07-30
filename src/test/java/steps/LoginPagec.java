@@ -1,14 +1,10 @@
 package steps;
+
 import MyApp_sweet.MyApp;
 import io.cucumber.java.en.Given;
-import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
-import io.cucumber.datatable.DataTable;
+import io.cucumber.java.en.When;
 import org.junit.Assert;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 
 import java.util.List;
 import java.util.Map;
@@ -46,10 +42,12 @@ public class LoginPagec {
 
     @Then("the user should see {string}")
     public void the_user_should_see(String resMessage) {
-        String actualMessage = app.getMessage();
+        String actualMessage = app.getMessage(); // Ensure `getMessage` returns the right messages
         System.out.println("Expected Message: " + resMessage);
         System.out.println("Actual Message: " + actualMessage);
-        Assert.assertEquals(resMessage, actualMessage);
+        Assert.assertEquals("Error message does not match", resMessage, actualMessage);
+
+
     }
 
     @Then("the user should be redirected to the {string}")
@@ -86,9 +84,5 @@ public class LoginPagec {
         String password = passwordPart1 + passwordPart2;
         app.enterCredentials(username, password);
     }
-
-
-
-
 }
 
