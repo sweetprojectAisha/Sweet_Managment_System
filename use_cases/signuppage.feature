@@ -2,14 +2,14 @@
 Feature: Sign_up page
 
   Background:
-    Given the person is on the sign_up page
+    Given the person is on the login page
     And the list of registered user includes:
       | username  | email      | phone     | age | password   |
       | validuser | validemail | 0599873421 | 21  | 12345678a@ |
 
   Scenario Outline: Sign_up with different details
     When the user clicks on the "Sign_up " link
-    When the user fills in sign_up form with:
+    And the user fills in sign_up form with:
       | name      | email              | phone      | age | password    | confPassword  |
       | <name>  | <email>          | <phone>  | <age> | <password> | <confPassword> |
     And the user submits the sign_up form
@@ -30,7 +30,7 @@ Feature: Sign_up page
 
   Scenario Outline: Sign_up with empty fields
     When the user clicks on the "Sign_up" link
-    When the user fills in sign_up form with:
+    And the user fills in sign_up form with:
       | name      | email             | phone       | age | password    | confPassword  |
       | <name>  | <email>         | <phone>   | <age> | <password> | <confPassword> |
     And the user submits the sign_up form

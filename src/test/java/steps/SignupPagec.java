@@ -16,11 +16,11 @@ public class SignupPagec {
     public SignupPagec(MyApp app) {
         this.app = app;
     }
-    @Given("the person is on the sign_up page")
-    public void the_person_is_on_the_sign_up_page() {
-        app.is_in_signuppage=true;
-        Assert.assertTrue(app.is_in_signuppage);
-    }
+//    @Given("the person is on the sign_up page")
+//    public void the_person_is_on_the_sign_up_page() {
+//        app.is_in_signuppage=true;
+//        Assert.assertTrue(app.is_in_signuppage);
+//    }
 
     @Given("the list of registered user includes:")
     public void the_list_of_registered_user_includes(io.cucumber.datatable.DataTable dataTable) {
