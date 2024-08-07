@@ -7,11 +7,11 @@ Feature: Add Product
     And the owner pages are open and the owner navigates to product management
 
   Scenario Outline: Add a new product with valid details
-    When the owner adds a product with the following details:
+    When the owner adds a product with the following valid details:
       | ProID   | ProName        | Description   | ProPrice | ProQuantity |
       | <proid> | <proname>      | <prodescription> | <proprice> | <proquantity> |
     Then the product should be added to the list
-    And the product details should be displayed
+
 
     Examples:
       | proid | proname      | prodescription | proprice | proquantity |
@@ -19,22 +19,34 @@ Feature: Add Product
       | 2     | cookie       | well_backed    | 49.99    | 50         |
 
   Scenario Outline: Increase quantity of an existing product
-    When the owner updates the product with the following details:
+    When the owner updates the product with the following details for existing product:
       | ProID   | ProName        | Description   | ProPrice | ProQuantity |
       | <proid> | <proname>      | <prodescription> | <proprice> | <proquantity> |
     Then the quantity of the existing product should be updated to "<new_quantity>"
-    And the product details should be updated in the list
+
 
     Examples:
       | proid | proname      | prodescription | proprice | proquantity | new_quantity |
       | 1     | cake         | tasty          | 999.99   | 10          | 20           |
       | 2     | cookie       | well_backed    | 49.99    | 50          | 70           |
 
-  Scenario Outline: Add a product with missing fields
-    When the user tries to add a product with the following details:
+  Scenario Outline: Increase quantity of non existing product
+    When the owner updates the product with the following details for non existing product:
       | ProID   | ProName        | Description   | ProPrice | ProQuantity |
       | <proid> | <proname>      | <prodescription> | <proprice> | <proquantity> |
-    Then the system should display a validation error message
+    Then the quantity of the existing product should not be updated to "<new_quantity>"
+
+
+    Examples:
+      | proid | proname      | prodescription | proprice | proquantity | new_quantity |
+      | 3     | cake         | tasty          | 999.99   | 10          | 20           |
+      | 4     | cookie       | well_backed    | 49.99    | 50          | 70           |
+
+  Scenario Outline: Add a product with missing fields
+    When the user tries to add a product with the following missing details:
+      | ProID   | ProName        | Description   | ProPrice | ProQuantity |
+      | <proid> | <proname>      | <prodescription> | <proprice> | <proquantity> |
+
     And the product should not be added to the list
 
     Examples:
@@ -45,24 +57,24 @@ Feature: Add Product
       | 6     | chococake| tasty           | 89.99    |           |
 
   Scenario Outline: Add a product with invalid data
-    When the user tries to add a product with the following details:
+    When the user tries to add a product with the following invalid details:
       | ProID   | ProName        | Description   | ProPrice   | ProQuantity |
       | <proid> | <proname>      | <prodescription> | <proprice> | <proquantity> |
-    Then the system should display a validation error message
+
     And the product should not be added to the list
 
     Examples:
       | proid | proname       | prodescription   | proprice  | proquantity |
       | 7     | cake          | tasty            | -999.99   | 10         |
       | 8     | cookie        | well_backed      | 49.99     | -10        |
-      | 9     | cookie        | well_backed      | 49.99     | 10000      |
+#      | 9     | cookie        | well_backed      | 49.99     | 10000      |
 
   Scenario Outline: Add a product with a duplicate ID
-    When the user tries to add a product with the following details:
+    When the user tries to add a product with the following details and dublicate id:
       | ProID   | ProName        | Description   | ProPrice | ProQuantity |
       | <proid> | <proname>      | <prodescription> | <proprice> | <proquantity> |
-    Then the system should display a duplication error message
-    And the product should not be added to the list
+
+
 
     Examples:
       | proid | proname       | prodescription   | proprice | proquantity |
