@@ -1,5 +1,3 @@
-
-
 Feature: Add Product
 
   Background:
@@ -11,8 +9,6 @@ Feature: Add Product
       | ProID   | ProName        | Description   | ProPrice | ProQuantity |
       | <proid> | <proname>      | <prodescription> | <proprice> | <proquantity> |
     Then the product should be added to the list
-
-
     Examples:
       | proid | proname      | prodescription | proprice | proquantity |
       | 1     | cake         | tasty          | 999.99   | 10         |
@@ -73,10 +69,18 @@ Feature: Add Product
     When the user tries to add a product with the following details and dublicate id:
       | ProID   | ProName        | Description   | ProPrice | ProQuantity |
       | <proid> | <proname>      | <prodescription> | <proprice> | <proquantity> |
-
-
-
     Examples:
       | proid | proname       | prodescription   | proprice | proquantity |
       | 1     | New cake      | tasty            | 799.99   | 5          |
       | 2     | New cookie    | well_backed      | 59.99    | 20         |
+
+
+  Scenario Outline: Delete an existing product
+    When the owner deletes a product with the following details:
+      | ProID   | ProName        | Description   | ProPrice | ProQuantity |
+      | <proid> | <proname>      | <prodescription> | <proprice> | <proquantity> |
+    Then the product should be removed from the list
+    Examples:
+      | proid | proname      | prodescription | proprice | proquantity |
+      | 1     | cake         | tasty          | 999.99   | 10         |
+      | 2     | cookie       | well_backed    | 49.99    | 50         |

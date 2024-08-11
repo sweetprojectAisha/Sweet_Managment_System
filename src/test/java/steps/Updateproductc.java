@@ -1,122 +1,190 @@
 package steps;
 
 import MyApp_sweet.ProductManagement;
-import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.junit.Assert;
-import io.cucumber.datatable.DataTable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.Assert.*;
+
 public class Updateproductc {
-    private ProductManagement productManagement;
-    private ProductManagement.Product productUnderUpdate;
-    private String expectedProductId;
-    private String actualErrorMessage;
+    ProductManagement pm;
+    private List<ProductManagement.Product> currentProducts;
 
     public Updateproductc() {
-        productManagement = ProductManagement.getInstance();
+        pm = ProductManagement.getInstance();
+        pm.setIs_an_owner(false);
+        pm.setNavagates_to_salespage(false);
+        pm.setTotalProfit(0.0);
+        pm.setTotalSales(0.0);
     }
 
-    @Given("the following products exist:")
-    public void the_following_products_exist(DataTable dataTable) {
-        List<Map<String, String>> productsList = dataTable.asMaps(String.class, String.class);
-        for (Map<String, String> productData : productsList) {
+//    @Given("the following products exist:")
+//    public void the_following_products_exist(io.cucumber.datatable.DataTable dataTable) {
+//
+//    }
+
+    @When("the owner updates the product with the following valid details:")
+    public void the_owner_updates_the_product_with_the_following_valid_details(io.cucumber.datatable.DataTable dataTable) {
+        List<Map<String, String>> rows = dataTable.asMaps(String.class, String.class);
+        int id, quantity;
+        String name, description;
+        double price;
+        ProductManagement.Product product;
+        currentProducts = new ArrayList<>();
+        for (Map<String, String> columns : rows) {
+            id = Integer.parseInt(columns.get("ProID"));
+            name = columns.get("ProName");
+            description = columns.get("Description");
+            price = Double.parseDouble(columns.get("ProPrice"));
+            quantity = Integer.parseInt(columns.get("ProQuantity"));
+            product = new ProductManagement.Product(id, name, description, price, quantity);
+            currentProducts.add(product);
             try {
-                int proID = Integer.parseInt(productData.get("ProID"));
-                String proName = productData.get("ProName");
-                String description = productData.get("Description");
-                double proPrice = Double.parseDouble(productData.get("ProPrice"));
-                int proQuantity = Integer.parseInt(productData.get("ProQuantity"));
-
-                ProductManagement.Product product = new ProductManagement.Product(proID, proName, description, proPrice, proQuantity);
-                productManagement.addproduct(product);
-
-                // Verify product was added
-                ProductManagement.Product addedProduct = productManagement.getProductById(proID);
-                Assert.assertNotNull("Product with ID " + proID + " should be added and retrievable", addedProduct);
-            } catch (Exception e) {
-                System.err.println("Failed to add product with ID: " + productData.get("ProID") + " - " + e.getMessage());
-                throw e; // Re-throw to fail the test if a product is not added successfully
+                pm.updateProduct2(product);
+                assertTrue(true);
+            } catch (Exception ex) {
+                assertTrue(false);
             }
         }
     }
 
-    @When("the owner updates the product with the following detailss:")
-    public void the_owner_updates_the_product_with_the_following_detailss(DataTable dataTable) {
-        Map<String, String> updateDetails = dataTable.asMaps(String.class, String.class).get(0);
-        try {
-            int proID = Integer.parseInt(updateDetails.get("ProID"));
-            String proName = updateDetails.get("ProName");
-            String description = updateDetails.get("Description");
-            double proPrice = Double.parseDouble(updateDetails.get("ProPrice"));
-            int proQuantity = Integer.parseInt(updateDetails.get("ProQuantity"));
-
-            productUnderUpdate = new ProductManagement.Product(proID, proName, description, proPrice, proQuantity);
-
-            ProductManagement.Product existingProduct = productManagement.getProductById(proID);
-            if (existingProduct == null) {
-                throw new IllegalStateException("Product with ID " + proID + " does not exist.");
-            }
-
-            productManagement.updateProduct2(productUnderUpdate);
-        } catch (Exception e) {
-            actualErrorMessage = e.getMessage();
+    @Then("the product should be updated in list")
+    public void the_product_should_be_updated_in_list() {
+        for (ProductManagement.Product currentProduct : currentProducts) {
+            ProductManagement.Product product = pm.getProduct(currentProduct.getId());
+            assertNotNull(product);
+            assertEquals(currentProduct.getId(), product.getId());
+            assertEquals(currentProduct.getName(), product.getName());
+            assertEquals(currentProduct.getDescription(), product.getDescription());
+            assertEquals(currentProduct.getQuantity(), product.getQuantity());
+            assertEquals(currentProduct.getPrice(), product.getPrice(), 0.001);
         }
     }
 
-    @Then("the product with ID {string} should have the updated details:")
-    public void the_product_with_id_should_have_the_updated_details(String proid, DataTable dataTable) {
-        Map<String, String> expectedDetails = dataTable.asMaps(String.class, String.class).get(0);
-        ProductManagement.Product product = productManagement.getProductById(Integer.parseInt(proid));
 
-        Assert.assertNotNull("Product with ID " + proid + " should not be null", product);
-        Assert.assertEquals("Product name mismatch", expectedDetails.get("ProName"), product.getName());
-        Assert.assertEquals("Product description mismatch", expectedDetails.get("Description"), product.getDescription());
-        Assert.assertEquals("Product price mismatch", Double.parseDouble(expectedDetails.get("ProPrice")), product.getPrice(), 0.01);
-        Assert.assertEquals("Product quantity mismatch", Integer.parseInt(expectedDetails.get("ProQuantity")), product.getQuantity());
-    }
+//    @Then("the product with ID {string} should have the updated details:")
+//    public void the_product_with_id_should_have_the_updated_details(String string, io.cucumber.datatable.DataTable dataTable) {
+//        // Write code here that turns the phrase above into concrete actions
+//        // For automatic transformation, change DataTable to one of
+//        // E, List<E>, List<List<E>>, List<Map<K,V>>, Map<K,V> or
+//        // Map<K, List<V>>. E,K,V must be a String, Integer, Float,
+//        // Double, Byte, Short, Long, BigInteger or BigDecimal.
+//        //
+//        // For other transformations you can register a DataTableType.
+//        throw new io.cucumber.java.PendingException();
+//    }
 
-    @Then("the product with ID {string} should not be updated")
-    public void the_product_with_id_should_not_be_updated(String proid) {
-        ProductManagement.Product product = productManagement.getProductById(Integer.parseInt(proid));
-        Assert.assertNotNull(product);
-        //
-//         Assuming you stored previous state before update attempt
-//         Verify that product details haven't changed
-//         For instance:
-//         Assert.assertEquals("Product name should be unchanged", previousProductName, product.getName());
-    }
-
-
-    @Given("the expected product ID is {string}")
-    public void setExpectedProductId(String productId) {
-        this.expectedProductId = productId;
-    }
-
-    @When("trying to update a non-existent product")
-    public void tryToUpdateNonExistentProduct() {
-        try {
-            if (expectedProductId == null || expectedProductId.isEmpty()) {
-                throw new IllegalStateException("Expected product ID is not set or is empty.");
+    @When("the owner updates the product with the following invalid details:")
+    public void the_owner_updates_the_product_with_the_following_invalid_details(io.cucumber.datatable.DataTable dataTable) {
+        List<Map<String, String>> rows = dataTable.asMaps(String.class, String.class);
+        int id, quantity;
+        String name, description;
+        double price;
+        ProductManagement.Product product;
+        currentProducts = new ArrayList<>();
+        for (Map<String, String> columns : rows) {
+            try {
+                id = Integer.parseInt(columns.get("ProID"));
+            } catch (Exception ex) {
+                id = 0;
             }
-            ProductManagement.Product nonExistentProduct = new ProductManagement.Product(Integer.parseInt(expectedProductId), "", "", 0.0, 0);
-            productManagement.updateProduct2(nonExistentProduct);
-        } catch (Exception e) {
-            this.actualErrorMessage = e.getMessage();
+            name = columns.get("ProName");
+            description = columns.get("Description");
+            try {
+                price = Double.parseDouble(columns.get("ProPrice"));
+            } catch (Exception ex) {
+                price = 0;
+            }
+            try {
+                quantity = Integer.parseInt(columns.get("ProQuantity"));
+            } catch (Exception ex) {
+                quantity = 0;
+            }
+            product = new ProductManagement.Product(id, name, description, price, quantity);
+            currentProducts.add(product);
+            try {
+                pm.updateProduct2(product);
+                assertTrue(false);
+            } catch (Exception ex) {
+                assertTrue(ex instanceof IllegalStateException);
+                assertTrue(ex.getMessage().contains("Invalid product details."));
+            }
         }
     }
 
-    @Then("the system should display a product not found error message")
-    public void the_system_should_display_a_product_not_found_error_message() {
-        String expectedErrorMessage = "Product with ID " + expectedProductId + " does not exist.";
-        Assert.assertEquals("Error message mismatch", expectedErrorMessage, getErrorMessage());
+//    @Given("the expected product ID is {string}")
+//    public void the_expected_product_id_is(String string) {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+
+    @When("the owner updates a non existing product with the following details:")
+    public void the_owner_updates_a_non_existing_product_with_the_following_details(io.cucumber.datatable.DataTable
+                                                                                            dataTable) {
+        List<Map<String, String>> rows = dataTable.asMaps(String.class, String.class);
+        int id, quantity;
+        String name, description;
+        double price;
+        ProductManagement.Product product;
+        currentProducts = new ArrayList<>();
+        for (Map<String, String> columns : rows) {
+            id = Integer.parseInt(columns.get("ProID"));
+            name = columns.get("ProName");
+            description = columns.get("Description");
+            price = Double.parseDouble(columns.get("ProPrice"));
+            quantity = Integer.parseInt(columns.get("ProQuantity"));
+            product = new ProductManagement.Product(id, name, description, price, quantity);
+            currentProducts.add(product);
+            try {
+                pm.updateProduct2(product);
+                assertTrue(false);
+            } catch (Exception ex) {
+                assertTrue(ex instanceof IllegalStateException);
+                assertTrue(ex.getMessage().contains("Cannot update. Product with ID: " + product.getId() + " does not exist."));
+            }
+        }
     }
 
-    private String getErrorMessage() {
-        return productManagement.getErrorMessage();
-    }
-
+//    @When("the owner updates the product with the following missing details:")
+//    public void the_owner_updates_the_product_with_the_following_missing_details(io.cucumber.datatable.DataTable
+//                                                                                         dataTable) {
+//        List<Map<String, String>> rows = dataTable.asMaps(String.class, String.class);
+//        int id = 0, quantity = 0;
+//        String name = null, description = null;
+//        double price = 0;
+//        ProductManagement.Product product;
+//        currentProducts = new ArrayList<>();
+//        for (Map<String, String> columns : rows) {
+//            try {
+//                id = Integer.parseInt(columns.get("ProID"));
+//            } catch (Exception ex) {
+//                id = 0;
+//            }
+//            name = columns.get("ProName");
+//            description = columns.get("Description");
+//            try {
+//                price = Double.parseDouble(columns.get("ProPrice"));
+//            } catch (Exception ex) {
+//                price = 0;
+//            }
+//            try {
+//                quantity = Integer.parseInt(columns.get("ProQuantity"));
+//            } catch (Exception ex) {
+//                quantity = 0;
+//            }
+//            product = new ProductManagement.Product(id, name, description, price, quantity);
+//            currentProducts.add(product);
+//            try {
+//                pm.updateProduct2(product);
+//                assertTrue(false);
+//            } catch (Exception ex) {
+//                assertTrue(ex instanceof IllegalStateException);
+//                assertTrue(ex.getMessage().contains("Cannot update. Product with ID: " + product.getId() + " does not exist."));
+//            }
+//        }
+//    }
 }
