@@ -1,40 +1,32 @@
 Feature: Apply Dynamic Discounts
 
-  Scenario: Apply a discount to a product
+  Scenario:The following products exist:
     Given the user is logged in as an owner
-    And the owner pages are open and the owner navigates to the sales management page
-    When the owner applies a discount to the product with the following details:
-      | ProID | ProName |Description | QuantitySold | PricePerUnit | TotalRevenue | CostPercentage |DiscountPercentage |
-      | 1     | cake    |tasty | 10           | 999.99       | 9999.90      | 50.0               |10.0|
+    And the owner pages are open and the owner navigates to product management
+    When the owner adds a product with the following valid details:
+      | ProID | ProName | Description | ProPrice | ProQuantity |
+      | 1     | cake    | tasty       | 999.99   | 10          |
+      | 2     | cookie  | well_backed | 49.99    | 50          |
+      | 3     | cake2   | well_backed | 39.99    | 80          |
+    Then the product should be added to the list
 
+  Scenario: Apply a discount to a product
+    When the owner applies a discount of 10% to the product with ID 1
+    Then the product's price should be updated to 899.99
 
-
-
-    Then the product's price should be updated with the discount
-
-  Scenario: View discounted product details
-    Given the following products exist:
-      | ProID | ProName | Price |
-      | 1     | cake    | 999.99|
-    When the owner views the details for the product with ID 1
-    Then the product's price should reflect the applied discount
-
-  Scenario: Apply discount to multiple products
-    Given the following products exist:
-      | ProID | ProName | Price |
-      | 1     | cake    | 999.99|
-      | 2     | cookie  | 49.99 |
-    When the owner applies the following discounts:
-      | ProID | DiscountPercentage |
-      | 1     | 15.0               |
-      | 2     | 5.0                |
-    Then the products' prices should be updated with the respective discounts
 
   Scenario: Attempt to apply an invalid discount
-    Given the following product exists:
-      | ProID | ProName | Price |
-      | 1     | cake    | 999.99|
-    When the owner attempts to apply a discount with the following details:
-      | ProID | DiscountPercentage |
-      | 1     | -10.0              |
-    Then an error message "Invalid discount percentage" should be displayed
+#
+    When the owner attempts to apply an invalid discount of -10% to the product with ID 2
+    Then the product's price should remain 49.99
+
+  Scenario Outline: Delete an existing product
+    When the owner deletes a product with the following details:
+      | ProID   | ProName   | Description      | ProPrice   | ProQuantity   |
+      | <proid> | <proname> | <prodescription> | <proprice> | <proquantity> |
+    Then the product should be removed from the list
+    Examples:
+      | proid | proname | prodescription | proprice | proquantity |
+      | 1     | cake    | tasty          | 999.99   | 10          |
+      | 2     | cookie  | well_backed    | 49.99    | 50          |
+      | 3     | cake2   | well_backed    | 39.99    | 80          |

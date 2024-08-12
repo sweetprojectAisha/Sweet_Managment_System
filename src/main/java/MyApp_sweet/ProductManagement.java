@@ -37,8 +37,7 @@ public class ProductManagement {
         public int quantity;
         public String description;
         private int quantitySold;
-        private double totalrevenue;
-        private double costpercentage;
+
 
 
         public Product(int id, String name, String description, double price, int quantity) {
@@ -49,7 +48,6 @@ public class ProductManagement {
             this.quantity = quantity;
             quantitySold = 0;
         }
-
 
         public int getQuantitySold() {
             return quantitySold;
@@ -196,6 +194,27 @@ public class ProductManagement {
     }
 
 
+    public void applyDiscount(int productId, double discountPercentage) {
+        Product product = prodeatails.get(productId);
+        if (product != null && discountPercentage > 0 && discountPercentage <= 100) {
+            double originalPrice = product.getPrice();
+            double discountAmount = originalPrice * (discountPercentage / 100);
+            double newPrice = originalPrice - discountAmount;
+            product.setPrice(newPrice);
+
+            logger.info("Applied " + discountPercentage + "% discount to product ID: " + productId);
+            logger.info("Original price: " + originalPrice + ", New price: " + newPrice);
+        } else {
+            errormessage = "Invalid product ID or discount percentage.";
+            logger.warning(errormessage);
+            throw new IllegalStateException(errormessage);
+        }
+    }
+
+    public double calculateNewprice(int productId) {
+        return prodeatails.get(productId).getPrice();
+    }
+
     public void addproduct(Product product) {
         logger.info("Attempting to add product: " + product);
         if (productExists(product.getId())) {
@@ -285,7 +304,7 @@ public class ProductManagement {
 
     public Product getProductById(int id) {
         logger.info("Attempting to retrieve product with ID: " + id);
-        Product product = prodeatails.get(id); // or however you are retrieving the product
+        Product product = prodeatails.get(id);
         if (product == null) {
             logger.info("Product with ID " + id + " not found.");
         } else {
