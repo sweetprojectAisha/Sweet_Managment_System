@@ -1,35 +1,57 @@
 Feature: Login page
 
-  Background:
-    Given the person is on the login page
-    And the list of valid users includes:
-      | username    | password    | userType |
-      | validuser   | validpass   | user     |
-      | validowner  | validpass   | owner    |
-      | validadmin  | validpass   | admin    |
 
-  Scenario Outline: Login with credentials
-    When the user enters "<username>" and "<password>" as "<userType>"
-    And the user submits the login form
-    Then the user should see "<resultMessage>"
-    And the user should be redirected to the "<expectedPage>"
-
+  Scenario:
+    Given the following users exist in table:
+      | UserName | Password |Type|
+      | name1 | password1 |admin |
+      | name2 | password2 |owner |
+      | name3 | password3 |user |
+  Scenario Outline:  : Successful login with valid credentials
+    When the person logged in with the following valid details:
+      | UserName   | Password        |
+      | <uname> | <pass>      |
     Examples:
-      | username    | password     | userType | resultMessage                | expectedPage        |
-      | validuser   | validpass    | user     | Welcome, validuser           | user_page      |
-      | validowner  | validpass    | owner    | Welcome, validowner          | owner_page     |
-      | validadmin  | validpass    | admin    | Welcome, validadmin          | admin_page     |
-      | validuser   | invalidpass  | user     | Invalid password             | login_page          |
-      | invaliduser | validpass    | user     | Invalid username             | login_page          |
-      | invaliduser | invalidpass  | user     | Invalid username or password | login_page          |
+      | uname | pass      |
+      | name1     | password1         |
+      | name2     | password2       |
 
-  Scenario Outline: Login with empty fields
-    When the user enters "<username>" and "<password>"
-    And the user submits the login form
-    Then the user should see "<resultMessage>"
-
+  Scenario Outline: : Unsuccessful login with invalid credentials
+    When the person logged in with the following invalid details:
+      | UserName   | Password        |
+      | <uname> | <pass>      |
+    Then the person should be still in login_page
     Examples:
-      | username | password | resultMessage          |
-      |    ""      |    ""      | Username can not be empty  |
-      | validuser|     ""     | Password can not be empty   |
-      |    ""      | validpass| Username can not be empty   |
+      | uname | pass      |
+      | name3     | password3         |
+
+
+  Scenario Outline: : Unsuccessful login with empty username
+    When the person logged in with the following empty username details:
+      | UserName   | Password        |
+      | <uname> | <pass>      |
+    Then the person should be still in login_page
+    Examples:
+      | uname | pass      |
+      |      | password1         |
+
+  Scenario Outline: : Unsuccessful login with empty password
+    When the person logged in with the following empty password details:
+      | UserName   | Password        |
+      | <uname> | <pass>      |
+    Then the person should be still in login_page
+    Examples:
+      | uname | pass      |
+      |  name1    |          |
+
+
+
+
+  Scenario Outline: : Unsuccessful login with both fields empty
+    When the person logged in with the following both empty details:
+      | UserName   | Password        |
+      | <uname> | <pass>      |
+    Then the person should be still in login_page
+    Examples:
+      | uname | pass      |
+      |      |          |
