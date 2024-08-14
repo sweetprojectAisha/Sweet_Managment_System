@@ -33,10 +33,10 @@ public class LoginPagec {
       name = columns.get("UserName");
       pass = columns.get("Password");
       type = columns.get("Type");
-      user = new MyApp.User(name, pass,type);
+      user = new MyApp.User(name,"" ,pass, "","",0,type);
       currentUsers.add(user);
       try {
-        app.addUser(name,pass,type);
+        app.addUser(name,"" ,pass, "","",0,type);
         assertTrue(true);
       } catch (Exception ex) {
         assertTrue(false);
