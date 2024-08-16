@@ -22,4 +22,3 @@ Scenario:
     Then the message should be delivered to the user with ID 3
     And the user with ID 3 should receive a notification
 
-#
