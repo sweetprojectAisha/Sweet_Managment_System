@@ -9,8 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class Communicte {
     CommunicationSys cs;
@@ -52,6 +51,26 @@ public class Communicte {
             assertTrue(false);
         }
     }
+    @When("the exist user with ID {int} sends a message {string} to exist owner with ID {int}")
+    public void theExistUserWithIDSendsAMessageToExistOwnerWithID(Integer userId, String message, Integer ownerId) {
+        try {
+            cs.sendMessage(userId, ownerId, message);
+            List<String> notifications = cs.getUserById(ownerId).getNotifications();
+            assertFalse(notifications.isEmpty());
+            assertTrue(notifications.get(0).contains("You have received a new message from " + cs.getUserById(userId).getUsername()));
+        } catch (Exception ex) {
+            assertTrue(false);
+        }
+    }
+    @Then("the exist owner with ID {int} should view messages from exist user with ID {int} {string}")
+    public void theExistOwnerWithIDShouldViewMessagesFromExistUserWithID(Integer ownerId, Integer userid, String expectedMessageContent) {
+        CommunicationSys.User owner = cs.getUserById(ownerId);
+        Assert.assertNotNull("Owner with ID " + ownerId + " does not exist.", owner);
+        List<String> ownerInbox = owner.getInbox();
+        boolean messageVisibleToOwner = ownerInbox.contains(expectedMessageContent);
+        assertTrue("Owner with ID " + ownerId + " cannot view the message: " + expectedMessageContent, messageVisibleToOwner);
+    }
+
 
 
     @When("the exist owner with ID {int} send a message {string} to exist user with ID {int}")
