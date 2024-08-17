@@ -37,7 +37,7 @@ public class Filter_steps {
 
     }
     @Then("the user should see recipes without:")
-    public void theUserShouldSeeRecipesWithout(io.cucumber.datatable.DataTable dataTable) {
+    public void theUserShouldSeeRecipesWithout() {
         obj.recipe_without_FoodAllergies(recipe.getFoodAllergies());
 
     }

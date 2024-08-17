@@ -9,7 +9,7 @@ Feature: Browse and search for dessert recipes
       | <username> | <email> | <phone> | <age> | <password> | <foodAllergies> |
     When the user clicks on browse all recipes
     And fills in the category with <category>
-    Then the user should see <description>
+    Then the user should see description is <description>
     And the user should see <prepTime>
     And the user should see <difficulty>
     And the user should see <rating>

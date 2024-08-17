@@ -26,7 +26,7 @@ public class SignupPagec {
     @Given("the following users exist in login sys:")
     public void the_following_users_exist_in_login_sys(io.cucumber.datatable.DataTable dataTable) {
         List<Map<String, String>> rows = dataTable.asMaps(String.class, String.class);
-        String name,pass,type,email,phone,confirmpass;
+        String name,pass,type,email,phone,confirmpass,city;
         int age;
         MyApp.User user;
         currentUsers = new ArrayList<>();
@@ -37,12 +37,13 @@ public class SignupPagec {
             type = columns.get("Type");
             email = columns.get("Email");
             phone = columns.get("Phone");
+            city = columns.get("City");
             confirmpass = columns.get("ConfirmPassword");
             age =Integer.parseInt( columns.get("Age"));
-            user = new MyApp.User(name,email ,pass, confirmpass,phone,age,type);
+            user = new MyApp.User(name,email ,pass, confirmpass,phone,age,type,city);
             currentUsers.add(user);
             try {
-                app.addUser(name,email ,pass, confirmpass,phone,age,type);
+                app.addUser(name,email ,pass, confirmpass,phone,age,type,city);
                 assertTrue(true);
             } catch (Exception ex) {
                 assertTrue(false);
@@ -53,7 +54,7 @@ public class SignupPagec {
     @When("the person signs up with the following valid details:")
     public void the_person_signs_up_with_the_following_valid_details(io.cucumber.datatable.DataTable dataTable) {
         List<Map<String, String>> rows = dataTable.asMaps(String.class, String.class);
-        String name,pass,type,email,phone,confirmpass;
+        String name,pass,type,email,phone,confirmpass,city;
         int age;
         MyApp.User user;
         currentUsers = new ArrayList<>();
@@ -64,9 +65,10 @@ public class SignupPagec {
             type = columns.get("Type");
             email = columns.get("Email");
             phone = columns.get("Phone");
+            city = columns.get("City");
             confirmpass = columns.get("ConfirmPassword");
             age =Integer.parseInt( columns.get("Age"));
-            user = new MyApp.User(name,email ,pass, confirmpass,phone,age,"");
+            user = new MyApp.User(name,email ,pass, confirmpass,phone,age,"",city);
             currentUsers.add(user);
             try {
                 app.signupUser(user);
@@ -90,9 +92,10 @@ public class SignupPagec {
             String pass = columns.get("Password");
             String email = columns.get("Email");
             String phone = columns.get("Phone");
+            String city = columns.get("City");
             String confirmpass = columns.get("ConfirmPassword");
             int age = Integer.parseInt(columns.get("Age"));
-            MyApp.User user = new MyApp.User(name, email, pass, confirmpass, phone, age, "user");
+            MyApp.User user = new MyApp.User(name, email, pass, confirmpass, phone, age, "user",city);
 
             try {
                 app.signupUser(user);
@@ -113,9 +116,10 @@ public class SignupPagec {
             String pass = columns.get("Password");
             String email = columns.get("Email");
             String phone = columns.get("Phone");
+            String city = columns.get("City");
             String confirmpass = columns.get("ConfirmPassword");
             int age = Integer.parseInt(columns.get("Age"));
-            MyApp.User user = new MyApp.User(name, email, pass, confirmpass, phone, age, "user");
+            MyApp.User user = new MyApp.User(name, email, pass, confirmpass, phone, age, "user",city);
 
             try {
                 app.signupUser(user);
@@ -135,9 +139,10 @@ public class SignupPagec {
             String pass = columns.get("Password");
             String email = columns.get("Email");
             String phone = columns.get("Phone");
+           String city = columns.get("City");
             String confirmpass = columns.get("ConfirmPassword");
             int age = Integer.parseInt(columns.get("Age"));
-            MyApp.User user = new MyApp.User(name, email, pass, confirmpass, phone, age, "user");
+            MyApp.User user = new MyApp.User(name, email, pass, confirmpass, phone, age, "user",city);
 
             try {
                 app.signupUser(user);
@@ -157,9 +162,10 @@ public class SignupPagec {
             String pass = columns.get("Password");
             String email = columns.get("Email");
             String phone = columns.get("Phone");
+            String city = columns.get("City");
             String confirmpass = columns.get("ConfirmPassword");
             int age = Integer.parseInt(columns.get("Age"));
-            MyApp.User user = new MyApp.User(name, email, pass, confirmpass, phone, age, "user");
+            MyApp.User user = new MyApp.User(name, email, pass, confirmpass, phone, age, "user",city);
 
             try {
                 app.signupUser(user);
@@ -179,9 +185,10 @@ public class SignupPagec {
             String pass = columns.get("Password");
             String email = columns.get("Email");
             String phone = columns.get("Phone");
+            String city = columns.get("City");
             String confirmpass = columns.get("ConfirmPassword");
             int age = Integer.parseInt(columns.get("Age"));
-            MyApp.User user = new MyApp.User(name, email, pass, confirmpass, phone, age, "user");
+            MyApp.User user = new MyApp.User(name, email, pass, confirmpass, phone, age, "user",city);
 
             try {
                 app.signupUser(user);

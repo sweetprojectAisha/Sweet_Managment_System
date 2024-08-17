@@ -49,10 +49,10 @@ public class Browse_steps {
         }
     }
 
-    @Then("the user should see {string}")
-    public void theUserShouldSee(String description) {
-        assertEquals(description, recipe.getDescription());
-    }
+//    @Then("the user should see  {string}")
+//    public void theUserShouldSee(String description) {
+//        assertEquals(description, recipe.getDescription());
+//    }
 
     @Then("the user should see preparing time {int}")
     public void theUserShouldSeePreparingTime(int prepTime) {

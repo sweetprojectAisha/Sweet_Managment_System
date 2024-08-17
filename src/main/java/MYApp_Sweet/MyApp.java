@@ -18,8 +18,8 @@ public class MyApp {
         }
         return instance;
     }
-    public void addUser(String username, String email, String password, String confirmPassword, String phone, int age, String type) {
-        users.put(username, new User(username,email ,password, confirmPassword,phone,age,type));
+    public void addUser(String username, String email, String password, String confirmPassword, String phone, int age, String type,String city) {
+        users.put(username, new User(username,email ,password, confirmPassword,phone,age,type,city));
     }
 
     public String login(String username, String password) {
@@ -69,7 +69,7 @@ public class MyApp {
             throw new IllegalStateException(errorMessage);
         }
 
-        if (user.getUsername() == null || user.getUsername().isEmpty()||user.getEmail() == null || user.getEmail().isEmpty()||user.getPhone()==null||user.getPhone().isEmpty()||user.getPassword()==null||user.getPassword().isEmpty()||user.getConfirmPassword()==null||user.getConfirmPassword().isEmpty()||user.getAge()<=0) {
+        if (user.getUsername() == null || user.getUsername().isEmpty()||user.getEmail() == null || user.getEmail().isEmpty()||user.getPhone()==null||user.getPhone().isEmpty()||user.getPassword()==null||user.getPassword().isEmpty()||user.getConfirmPassword()==null||user.getConfirmPassword().isEmpty()||user.getAge()<=0||user.getCity()==null||user.getCity().isEmpty() ){
             String errorMessage = "All fields is required.";
             logger.warning(errorMessage);
             throw new IllegalStateException(errorMessage);
@@ -119,8 +119,8 @@ public class MyApp {
         private String phone;
         private int age;
         private String type;
-
-        public User(String username, String email, String password, String confirmPassword, String phone, int age, String type) {
+        private String city;
+        public User(String username, String email, String password, String confirmPassword, String phone, int age, String type,String city) {
             this.username = username;
             this.email = email;
             this.password = password;
@@ -128,6 +128,7 @@ public class MyApp {
             this.phone = phone;
             this.age = age;
             this.type = type;
+            this.city=city;
         }
 
 
@@ -159,7 +160,9 @@ public class MyApp {
             return type;
         }
 
-
+        public String getCity() {
+            return city;
+        }
 
         public boolean isPasswordValid() {
             return password != null && password.length() >= 8;
