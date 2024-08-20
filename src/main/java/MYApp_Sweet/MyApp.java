@@ -1,4 +1,5 @@
 package MYApp_Sweet;
+import java.io.*;
 import java.util.logging.Logger;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,7 +8,8 @@ import java.util.Map;
 
 public class MyApp {
     private static MyApp instance;
-    private Map<String, User> users=new HashMap<>();
+    private static Map<String, User> users=new HashMap<>();
+    private static final String USER_FILE = "users.txt";
     private String lastErrorMessage;
     private String currentPage;
     private static final Logger logger = Logger.getLogger(MyApp.class.getName());
@@ -18,6 +20,13 @@ public class MyApp {
         }
         return instance;
     }
+public MyApp(){
+        loadUsers();
+}
+
+
+
+
     public void addUser(String username, String email, String password, String confirmPassword, String phone, int age, String type,String city) {
         users.put(username, new User(username,email ,password, confirmPassword,phone,age,type,city));
     }
@@ -100,6 +109,7 @@ public class MyApp {
             throw new IllegalStateException(errorMessage);
         }
         users.put(user.getUsername(), user);
+        saveUsers();
         currentPage = "loginPage";
         logger.info("User with name: " + user.getUsername() + " signed up successfully.");
     }
@@ -111,6 +121,77 @@ public class MyApp {
     private boolean userExists(String name) {
         return users.containsKey(name);
     }
+    public void loadUsers() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("users.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length == 8) {
+                    String username = parts[0];
+                    String email = parts[1];
+                    String password = parts[2];
+                    String confirmPassword = parts[3];
+                    String phone = parts[4];
+                    int age;
+                    try {
+                        age = Integer.parseInt(parts[5]);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid age format for user: " + username);
+                        continue;
+                    }
+                    String type = parts[6];
+                    String city = parts[7];
+
+
+                    users.put(username, new User(username, email, password, confirmPassword, phone, age, type, city));
+                } else {
+                    System.out.println("Invalid user data format: " + line);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+
+    public void saveUsers() {
+        try (FileWriter writer = new FileWriter("users.txt")) {
+            for (Map.Entry<String, MyApp.User> entry : users.entrySet()) {
+                MyApp.User user = entry.getValue();
+                writer.write(serializeUser(user) + System.lineSeparator());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String serializeUser(User user) {
+        return user.getUsername() + "," +
+                user.getEmail() + "," +
+                user.getPassword() + "," +
+                user.getConfirmPassword() + "," +
+                user.getPhone() + "," +
+                user.getAge() + "," +
+                user.getType() + "," +
+                user.getCity();
+    }
+
+    private User deserializeUser(String data) {
+        String[] parts = data.split(",");
+        if (parts.length != 8) {
+            throw new IllegalArgumentException("Invalid user data format: " + data);
+        }
+        try {
+            return new User(parts[0], parts[1], parts[2], parts[3], parts[4], Integer.parseInt(parts[5]), parts[6], parts[7]);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid number format in user data: " + data, e);
+        }
+    }
+
+
     public static class User {
         private String username;
         private String email;
@@ -120,15 +201,15 @@ public class MyApp {
         private int age;
         private String type;
         private String city;
-        public User(String username, String email, String password, String confirmPassword, String phone, int age, String type,String city) {
-            this.username = username;
-            this.email = email;
-            this.password = password;
-            this.confirmPassword = confirmPassword;
-            this.phone = phone;
-            this.age = age;
-            this.type = type;
-            this.city=city;
+        public User(String username, String email, String password, String confirmPassword, String phone, int age, String type, String city) {
+            this.username = username != null ? username : "";
+            this.email = email != null ? email : "";
+            this.password = password != null ? password : "";
+            this.confirmPassword = confirmPassword != null ? confirmPassword : "";
+            this.phone = phone != null ? phone : "";
+            this.age = age > 0 ? age : 0;
+            this.type = type != null ? type : "";
+            this.city = city != null ? city : "";
         }
 
 

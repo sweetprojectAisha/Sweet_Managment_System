@@ -1,0 +1,7 @@
+johndoe,johndoe@example.com,1234567890,30
+janedoe,janedoe@example.com,0987654321,28
+bob,bob@example.com,4444444444,35
+alice,alice@example.com,5555555555,25
+aisha,aisha@a.com,1234567890,21
+name2,newemail14@example.com,05898765343,23
+name1,newemail3@example.com,05999876543,21

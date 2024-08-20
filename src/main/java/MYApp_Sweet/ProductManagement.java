@@ -1,5 +1,6 @@
 package MYApp_Sweet;
 
+import java.io.*;
 import java.util.logging.Logger;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.List;
 public class ProductManagement {
     private static ProductManagement instance;
     private static final Logger logger = Logger.getLogger(ProductManagement.class.getName());
+    private static final String PRODUCT_FILE = "products.txt";
     private boolean is_an_owner;
     private boolean navagates_to_pmpage;
     private boolean navagates_to_salespage;
@@ -20,8 +22,8 @@ public class ProductManagement {
     public String errormessage = "";
 
     private ProductManagement() {
+        loadProducts();
     }
-
     public static ProductManagement getInstance() {
         if (instance == null) {
             instance = new ProductManagement();
@@ -168,6 +170,7 @@ public class ProductManagement {
             logger.info("Calculated profit: " + profit);
             logger.info("Total sales updated to: " + totalSales);
             logger.info("Total profit updated to: " + totalProfit);
+            saveProducts();
         } else {
             errormessage = "Product not available or insufficient quantity.";
             logger.warning(errormessage);
@@ -180,6 +183,7 @@ public class ProductManagement {
         if (productExists(productId)) {
             SoldProduct soldprod = new SoldProduct(productId, pricePerUnit, quantitySold, totalrevenue, costPercentage, discountPercentage);
             soldprodeatails.put(soldprod.getId(), soldprod);
+            saveProducts();
         } else {
             errormessage = "The product with id " + productId + " doesn't exist";
             logger.warning(errormessage);
@@ -201,6 +205,7 @@ public class ProductManagement {
             double discountAmount = originalPrice * (discountPercentage / 100);
             double newPrice = originalPrice - discountAmount;
             product.setPrice(newPrice);
+            saveProducts();
 
             logger.info("Applied " + discountPercentage + "% discount to product ID: " + productId);
             logger.info("Original price: " + originalPrice + ", New price: " + newPrice);
@@ -231,6 +236,7 @@ public class ProductManagement {
             throw new IllegalStateException(errormessage);
         }
         prodeatails.put(product.getId(), product);
+        saveProducts();
         logger.info("Product with ID: " + product.getId() + " added successfully.");
     }
 
@@ -242,6 +248,7 @@ public class ProductManagement {
         }
         existingProduct.setQuantity(newQuantity);
         prodeatails.put(id, existingProduct);
+        saveProducts();
         logger.info("Product with ID: " + id + " updated successfully.");
     }
 
@@ -260,6 +267,7 @@ public class ProductManagement {
                 throw new IllegalStateException(errormessage);
             }
             prodeatails.put(id, product);
+            saveProducts();
             logger.info("Product with ID: " + id + " updated successfully.");
         }
     }
@@ -276,6 +284,7 @@ public class ProductManagement {
             soldprodeatails.remove(id);
         }
         prodeatails.remove(id);
+        saveProducts();
         if(prodeatails.isEmpty()){
             totalSales = 0.0;
             totalProfit = 0.0;
@@ -353,6 +362,92 @@ public class ProductManagement {
     public void setProductNotFoundMessage(int productId) {
         this.errormessage = "Product with ID " + productId + " does not exist";
     }
+    public void loadProducts() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("products.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length == 5) {
+                    int id;
+                    String name = parts[1];
+                    String description = parts[2];
+                    double price;
+                    int quantity;
+
+                    try {
+                        id = Integer.parseInt(parts[0]);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid ID format for product: " + parts[0]);
+                        continue;
+                    }
+
+                    try {
+                        price = Double.parseDouble(parts[3]);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid price format for product: " + name);
+                        continue;
+                    }
+
+                    try {
+                        quantity = Integer.parseInt(parts[4]);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid quantity format for product: " + name);
+                        continue;
+                    }
+
+
+                    prodeatails.put(id, new Product(id, name, description, price, quantity));
+                } else {
+                    System.out.println("Invalid product data format: " + line);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    public void saveProducts() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("products.txt"))) {
+            for (Map.Entry<Integer, Product> entry : prodeatails.entrySet()) {
+                Product product = entry.getValue();
+                writer.write(product.getId() + "," +
+                        product.getName() + "," +
+                        product.getDescription() + "," +
+                        product.getPrice() + "," +
+                        product.getQuantity());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private String serializeProduct(Product product) {
+        return product.getId() + "," +
+                product.getName() + "," +
+                product.getDescription() + "," +
+                product.getPrice() + "," +
+                product.getQuantity();
+    }
+    private Product deserializeProduct(String data) {
+        String[] parts = data.split(",");
+        if (parts.length != 5) {
+            throw new IllegalArgumentException("Invalid product data format: " + data);
+        }
+        try {
+            int id = Integer.parseInt(parts[0]);
+            String name = parts[1];
+            String description = parts[2];
+            double price = Double.parseDouble(parts[3]);
+            int quantity = Integer.parseInt(parts[4]);
+
+            return new Product(id, name, description, price, quantity);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid number format in product data: " + data, e);
+        }
+    }
+
 
     public static class SoldProduct {
         private int id;

@@ -25,7 +25,8 @@ public class LoginPagec {
   @Given("the following users exist in table:")
   public void the_following_users_exist_in_table(io.cucumber.datatable.DataTable dataTable) {
     List<Map<String, String>> rows = dataTable.asMaps(String.class, String.class);
-    String name,pass,type;
+    String name, pass, type, email, confirmPassword, phone, city;
+    int age;
     MyApp.User user;
     currentUsers = new ArrayList<>();
 
@@ -33,10 +34,17 @@ public class LoginPagec {
       name = columns.get("UserName");
       pass = columns.get("Password");
       type = columns.get("Type");
-      user = new MyApp.User(name,"" ,pass, "","",0,type,"");
+      email = columns.getOrDefault("Email", "");
+      confirmPassword = columns.getOrDefault("ConfirmPassword", pass); // Default to pass if not provided
+      phone = columns.getOrDefault("Phone", "");
+      age = Integer.parseInt(columns.getOrDefault("Age", "0"));
+      city = columns.getOrDefault("City", "");
+
+      System.out.println(name);
+      user = new MyApp.User(name, email, pass, confirmPassword, phone, age, type, city);
       currentUsers.add(user);
       try {
-        app.addUser(name,"" ,pass, "","",0,type,"");
+        app.addUser(name, email, pass, confirmPassword, phone, age, type, city);
         assertTrue(true);
       } catch (Exception ex) {
         assertTrue(false);

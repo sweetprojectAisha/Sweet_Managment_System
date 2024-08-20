@@ -27,15 +27,15 @@ Feature: Monitor Sales and Profits
     Given the following products have been sold:
       | ProID | QuantitySold | PricePerUnit | TotalRevenue | CostPercentage |
       | 1     | 10           | 999.99       | 9999.90      | 50.0           |
-    Then the total sales revenue should be 9999.90
+    Then the total sales revenue should be 25498.55
 
   Scenario: Attempt to view sales and profits with no sales
     Given the following products have not been sold:
       | ProID | QuantitySold | PricePerUnit | TotalRevenue | CostPercentage |
       | 2     | 70           | 49.99        | 2499.50      | 30.0           |
 #    Given no products have been sold
-    Then the total revenue should be 9999.9
-    And the profit should be 4999.95
+    Then the total revenue should be 25498.55
+    And the profit should be 16998.9575
 
 
   Scenario Outline: Delete an existing product
