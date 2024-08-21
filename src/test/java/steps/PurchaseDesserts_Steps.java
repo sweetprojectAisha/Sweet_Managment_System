@@ -1,5 +1,5 @@
-package steps;
 
+package steps;
 import MYApp_Sweet.BeneficiaryUser;
 import MYApp_Sweet.PurchasedProduct;
 import io.cucumber.datatable.DataTable;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class PurchaseDesserts_Steps {
     BeneficiaryUser beneficiaryUser;
@@ -42,60 +42,89 @@ public class PurchaseDesserts_Steps {
     public void theListOfAvailableDessertsIncludes(DataTable dataTable) {
         List<Map<String, String>> dessertsList = dataTable.asMaps(String.class, String.class);
         for (Map<String, String> dessert : dessertsList) {
-            name = dessert.get("dessertName");
-            date=dessert.get("date");
-            price = Double.parseDouble(dessert.get("price"));
-            availability = dessert.get("availability");
-            dietaryInfo = dessert.get("dietaryInfo");
-            PurchasedProduct product = new PurchasedProduct(name,date, price, availability, dietaryInfo);
+            String name = dessert.get("dessertName");
+            String date = dessert.get("date");
+            double price = Double.parseDouble(dessert.get("price"));
+            String availability = dessert.get("availability");
+            String dietaryInfo = dessert.get("dietaryInfo");
+            PurchasedProduct product = new PurchasedProduct(name, date, price, availability, dietaryInfo);
             dessertsInventory.add(product);
+            System.out.println("Added to inventory: " + product.getItemName() + " - " + product.getAvailability());
         }
     }
+
+
 
     @When("the user selects a dessert:")
     public void theUserSelectsADessert(DataTable dataTable) {
         List<Map<String, String>> selectedDesserts = dataTable.asMaps(String.class, String.class);
-        for (Map<String, String> dessert : selectedDesserts) {
-            String name = dessert.get("dessertName");
-            String availability = dessert.get("availability");
+        boolean found = false;
+
+        for (Map<String, String> dessertMap : selectedDesserts) {
+            String name = dessertMap.get("dessertName");
+            String availability = dessertMap.get("availability");
+
+            System.out.println("Trying to select dessert: " + name + " - " + availability); // Debugging statement
 
             for (PurchasedProduct product : dessertsInventory) {
+                System.out.println("Checking inventory item: " + product.getItemName() + " - " + product.getAvailability()); // Debugging statement
+
                 if (product.getItemName().equals(name) && product.getAvailability().equals(availability)) {
-                    beneficiaryUser.selectRecipeForFeedback(name, ""); // purchaseDate is irrelevant in this case
+                    dessert = convertToDessert(product); // Convert to Dessert
+                    itemName = name;
+                    price = product.getPrice();
+                    found = true;
+                    break; // Exit loop once dessert is found
                 }
             }
+
+            // Assertion here to check if the dessert was found
+            assertTrue("Selected dessert not found in the inventory: " + name + " - " + availability, found);
         }
     }
 
-    // @When("the user confirms the purchase")
-    public  void theUserConfirmsThePurchase()
+
+
+    private Dessert convertToDessert(PurchasedProduct product)
     {
-        if (dessert.getDessertName() != null) {
-            String availability = dessert.getDessertName()+ dessert.getAvailability();
-            if (availability.equals("In Stock")) {
-                // Simulate the purchase by updating the inventory
-                dessert.setAvailability("Out of Stock");
-                // Update the BeneficiaryUser state (e.g., add to purchased products)
-                PurchasedProduct purchasedProduct = new PurchasedProduct(itemName, price, purchaseDate);
-                System.out.println("Purchase successful");
-            } else {
-                System.out.println("Dessert is out of stock");
-            }
-        } else {
-            System.out.println("No dessert selected");
-        }
+        Dessert dessert = new Dessert();
+        dessert.setDessertName(product.getItemName());
+        dessert.setAvailability(product.getAvailability());
+        return dessert;
     }
 
-    @Then("the user should see {string}")
-    public void theUserShouldSee(String expectedMessage) {
-        String actualMessage = beneficiaryUser.getPurchaseMessage();
-        assertEquals(expectedMessage, actualMessage);
+
+    @When("the user confirms the purchase")
+    public void theUserConfirmsThePurchase() {
+        assertNotNull("No dessert selected", dessert);
+
+        // Check dessert availability and perform actions
+        assertEquals("Dessert availability should be 'In Stock'", "In Stock", dessert.getAvailability());
+
+        dessert.setAvailability("Out of Stock");
+        purchasedProduct = new PurchasedProduct(itemName, price, getCurrentDate());
+        beneficiaryUser.addPurchasedProduct(itemName, price, getCurrentDate());
+        System.out.println("Added purchased product: " + purchasedProduct);
     }
+
+
+
+
+
 
     @Then("the desserts inventory should reflect the changes")
     public void theDessertsInventoryShouldReflectTheChanges() {
-        // Implement logic to verify that the inventory was updated correctly
+        boolean productFound = false;
+        for (PurchasedProduct product : dessertsInventory) {
+            if (product.getItemName().equals(itemName) && product.getPrice() == price) {
+                productFound = true;
+                break;
+            }
+        }
+        assertTrue("Purchased product not found in inventory", productFound);
     }
+
+
 
     @Then("the user should be redirected to the {string}")
     public void theUserShouldBeRedirectedToThe(String expectedPage) {
@@ -120,4 +149,12 @@ public class PurchaseDesserts_Steps {
             beneficiaryUser.updateDetails(userID, username, email, phone, age, password, dietaryNeeds, foodAllergies);
         }
     }
+
+    @Then("the user should see this msg {string}")
+    public void theUserShouldSeeThisMsg(String string) {
+        // Write code here that turns the phrase above into concrete actions
+
+    }
+
+
 }

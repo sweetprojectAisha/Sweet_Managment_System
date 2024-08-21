@@ -1,3 +1,4 @@
+
 package steps;
 
 import io.cucumber.java.en.When;
@@ -9,6 +10,8 @@ import MYApp_Sweet.Dessert;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
 
 public class ProvideFeedback_Steps {
     private List<Dessert> availableDesserts = new ArrayList<>();
@@ -29,18 +32,32 @@ public class ProvideFeedback_Steps {
         for (Map<String, String> row : rows) {
             Dessert dessert = new Dessert();
             dessert.setDessertName(row.get("dessertName"));
-            dessert.setPrice(Double.parseDouble(row.get("price")));
+
+            String priceStr = row.get("price");
+            if (priceStr == null || priceStr.trim().isEmpty()) {
+                System.out.println("Price is null or empty");
+                continue; // Handle this case appropriately (e.g., log error or set a default value)
+            }
+
+            try {
+                dessert.setPrice(Double.parseDouble(priceStr));
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid price format: " + priceStr);
+                continue; // Handle invalid format case
+            }
+
             dessert.setAvailability(row.get("availability"));
             dessert.setDietaryInfo(row.get("dietaryInfo"));
             availableDesserts.add(dessert);
         }
-        // You might want to store this information in the BeneficiaryUser class if necessary
         object4.setAvailableDesserts(availableDesserts);
     }
 
-    @When("the user selects a recipe to provide feedback:")
-    public void theUserSelectsARecipeToProvideFeedback(io.cucumber.datatable.DataTable dataTable) {
+    @When("the user selects a product to provide feedback:")
+    public void theUserSelectsAProductToProvideFeedback(io.cucumber.datatable.DataTable dataTable) {
         List<Map<String, String>> data = dataTable.asMaps(String.class, String.class);
+        boolean productSelected = false;  // Track if a product is successfully selected
+
         for (Map<String, String> row : data) {
             String itemName = row.get("itemName");
             String purchaseDate = row.get("purchaseDate");
@@ -52,13 +69,19 @@ public class ProvideFeedback_Steps {
             } else {
                 System.out.println("Product selected: " + itemName + " with purchase date: " + purchaseDate);
                 object4.selectRecipeForFeedback(itemName, purchaseDate);
+                productSelected = true;  // Mark that a product has been selected
+                break;  // Exit the loop as we've successfully selected a product
             }
+        }
+
+        if (!productSelected) {
+            System.out.println("Error: No product selected for feedback.");
+            object4.displayError("No product selected for feedback.");
         }
     }
 
     @When("the user submits feedback with the rating {string} and comment {string}")
     public void theUserSubmitsFeedbackWithTheRatingAndComment(String rating, String comment) {
-        // Use the BeneficiaryUser object to handle feedback submission
         object4.submitFeedback(rating, comment);
     }
 
@@ -66,7 +89,6 @@ public class ProvideFeedback_Steps {
     public void theFeedbackLogShouldBeUpdatedWith(io.cucumber.datatable.DataTable dataTable) {
         List<Map<String, String>> feedbackLogData = dataTable.asMaps(String.class, String.class);
 
-        // Iterate over the feedback log data and verify the entries using BeneficiaryUser
         for (Map<String, String> row : feedbackLogData) {
             String itemName = row.get("itemName");
             String rating = row.get("rating");
@@ -74,31 +96,37 @@ public class ProvideFeedback_Steps {
             String feedbackDate = row.get("feedbackDate");
             String feedbackStatus = row.get("feedbackStatus");
 
-            // Compare this data with what's stored in BeneficiaryUser's feedback log
             object4.verifyFeedbackLog(itemName, rating, comment, feedbackDate, feedbackStatus);
         }
     }
 
-    @Then("the user should see a confirmation message {string}")
+    @Then("^the user should see a confirmation message \"([^\"]*)\"$")
     public void theUserShouldSeeAConfirmationMessage(String expectedMessage) {
-        String actualMessage = object4.getConfirmationMessage(); // Replace with actual logic to retrieve the message
-
-        if (actualMessage.equals(expectedMessage)) {
-            System.out.println("Confirmation message: " + actualMessage);
-        } else {
-            throw new AssertionError("Expected: " + expectedMessage + " but got: " + actualMessage);
-        }
+        String actualMessage = object4.getConfirmationMessage();
+        assertEquals("Expected: " + expectedMessage + " but got: " + actualMessage, expectedMessage, actualMessage);
     }
 
-    @Then("the user should see an error message {string}")
+    @Then("^the user should see an error message \"([^\"]*)\"$")
     public void theUserShouldSeeAnErrorMessage(String expectedErrorMessage) {
         String actualErrorMessage = object4.getDisplayedErrorMessage();
-        if (actualErrorMessage.equals(expectedErrorMessage)) {
-            System.out.println("Error message verified: " + actualErrorMessage);
-        } else {
-            System.out.println("Expected error message: " + expectedErrorMessage);
-            System.out.println("Actual error message: " + actualErrorMessage);
-            throw new AssertionError("Error message does not match");
+        assertEquals("Error message does not match", expectedErrorMessage, actualErrorMessage);
+    }
+
+
+    @When("the user selects a recipe to provide feedback:")
+    public void theUserSelectsARecipeToProvideFeedback(io.cucumber.datatable.DataTable dataTable) {
+        List<Map<String, String>> data = dataTable.asMaps(String.class, String.class);
+        for (Map<String, String> row : data) {
+            String itemName = row.get("itemName");
+            String purchaseDate = row.get("purchaseDate");
+
+            if (!object4.isProductPurchased(itemName, purchaseDate)) {
+                System.out.println("Error: Cannot provide feedback on an unpurchased product");
+                object4.displayError("Cannot provide feedback on an unpurchased product");
+            } else {
+                System.out.println("Recipe selected: " + itemName + " with purchase date: " + purchaseDate);
+                object4.selectRecipeForFeedback(itemName, purchaseDate);
+            }
         }
     }
 }

@@ -32,7 +32,7 @@ public class ProfitsAndFinantialReportC {
         return instance;
     }
 
-    // Load reports from a file
+
     private void loadReports() {
         try (BufferedReader reader = new BufferedReader(new FileReader(REPORT_FILE))) {
             String line;

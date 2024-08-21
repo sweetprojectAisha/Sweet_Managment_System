@@ -1,5 +1,5 @@
-package MYApp_Sweet;
 
+package MYApp_Sweet;
 import java.util.ArrayList;
 import java.util.List;
 public class PurchasedProduct {
@@ -78,7 +78,7 @@ public class PurchasedProduct {
         this.feedbackList.add(feedback);
     }
 
-    public Object getAvailability()
+    public String getAvailability()
     {
         return availability;
     }

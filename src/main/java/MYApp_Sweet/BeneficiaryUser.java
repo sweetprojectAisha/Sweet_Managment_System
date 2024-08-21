@@ -1,10 +1,12 @@
-package MYApp_Sweet;
 
+package MYApp_Sweet;
+import io.cucumber.java.Before;
 import MYApp_Sweet.PurchasedProduct;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BeneficiaryUser {
     public static List<Recipe> recipes = new ArrayList<>(); // Initialize the static list
@@ -19,24 +21,45 @@ public class BeneficiaryUser {
     private PurchasedProduct selectedProduct; // Assuming this is required
     private String errorMessage;
     private PurchasedProduct p;
+    /// temp :
+    private String username;
+    private String email;
+    private String password;
+    private String confirmPassword;
+    private String phone;
+    private String age;
+    private String type;
+    private String foodallergies;
+    /// temp ////
+    public BeneficiaryUser(List<Recipe> recipes) {
+        this.recipes = recipes;
+    }
+
+   /* public BeneficiaryUser(String username, String email, String phone, String age, String password, String foodAllergies)
+    {
+        username="validuser";
+        email="validemail";
+        phone="0599873421";
+        age="21";
+        password="12345678a@";
+        foodAllergies="Gluten";
+    }*/
+
+
+    // purchased
+
 
     private boolean checkIfPurchaseSuccessful() {
         // Check if there is a selected product
-        if (this.selectedProduct == null) {
-            return false; // No product selected
-        }
-
+        if (this.selectedProduct == null) return false; // No product selected
         // Check if the selected product is in stock
-        if (!isProductInStock(this.selectedProduct.getItemName())) {
+        if (!isProductInStock(this.selectedProduct.getItemName()))
             return false; // Product is out of stock
-        }
-
         // Check if the purchase has been recorded
         boolean purchaseRecorded = isPurchaseRecorded(this.selectedProduct.getItemName(), this.selectedProduct.getPurchaseDate());
         if (!purchaseRecorded) {
-            return false; // Purchase was not recorded
+            return false;
         }
-
         return true;
     }
 
@@ -47,10 +70,13 @@ public class BeneficiaryUser {
     }
 
     private boolean isProductInStock(String itemName) {
-        if (itemName == p.getItemName() && p.getAvailability() == availableDesserts)
-            return true;
-        else
-            return false;
+        // Iterate through available desserts to find the matching item
+        for (Dessert dessert : availableDesserts) {
+            if (itemName.equals(dessert.getDessertName()) && "In Stock".equals(dessert.getAvailability())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static List<Recipe> getRecipes() {
@@ -66,6 +92,7 @@ public class BeneficiaryUser {
         errorDisplayed = false;
     }
 
+    ///////////////////////****************************//////////////////////////////
     public Recipe clickBrowseAllRecipes(String category) {
         for (Recipe recipe : recipes) {
             if (recipe.getCategory().equals(category)) {
@@ -81,7 +108,8 @@ public class BeneficiaryUser {
         return null;
     }
 
-    public void clickSearch() {
+    //////////////////////////////////////////////////////////////////////////////////////////
+  /*  public void clickSearch() {
         // Simulate clicking search
         System.out.println("Search button clicked");
     }
@@ -98,10 +126,15 @@ public class BeneficiaryUser {
             System.out.println(" doesnt exist");
         }
         return null;
-    }
+    }*/
 
-
+    ///
     public void fillname_category(String name, String category) {
+        // Lazy initialization of the errors map
+        if (errors == null) {
+            errors = new HashMap<>();
+        }
+
         if (name == null || name.isEmpty()) {
             errors.put("name", "Name cannot be empty");
             errorDisplayed = true;
@@ -115,70 +148,93 @@ public class BeneficiaryUser {
         }
     }
 
+
     public boolean isErrorDisplayed(String field) {
         return errors.containsKey(field);
     }
 
     public boolean checkIfRecipeExists(String searchName) {
+        if (searchName == null) {
+            System.out.println("Search name is null.");
+            return false;
+        }
+
         for (Recipe recipe : recipes) {
             if (searchName.equals(recipe.getSweetname())) {
                 return true;
             }
         }
+        System.out.println("No recipe matches your dietary needs.");
         return false;
     }
 
-    public Recipe filter_by_FoodAllergiesAndIngredient(String FoodAllergies, String Ingredient) {
+    ///////////////////////////////////
+    public List<Recipe> filterByDietaryNeedsAndFoodAllergies(String dietaryNeeds, String foodAllergies) {
+        return recipes.stream()
+                .filter(recipe -> dietaryNeeds.equals(recipe.getDietaryNeeds()) &&
+                        foodAllergies.equals(recipe.getFoodAllergies()))
+                .collect(Collectors.toList());
+    }
+
+
+    public Recipe recipe_without_FoodAllergies(String foodAllergies) {
         for (Recipe recipe : recipes) {
-            if (recipe.getDietaryNeeds().equals(Ingredient)) {
-                System.out.println(" Recipe filter_by: " + recipe.getDietaryNeeds() +
-                        "\n" + recipe.getFoodAllergies());
+            // Check if FoodAllergies in recipe is not null before comparing
+            String recipeFoodAllergies = recipe.getFoodAllergies();
+            if (recipeFoodAllergies != null && recipeFoodAllergies.equals(foodAllergies)) {
+                System.out.println("This recipe avoids: " + foodAllergies + "\nDescription: "
+                        + recipe.getDescription() + "\nPreparation Time: "
+                        + recipe.getPrepTime() + "\nDifficulty: "
+                        + recipe.getDifficulty() + "\nRating: "
+                        + recipe.getRating());
                 return recipe;
             }
-            System.out.println(" doesnt exist");
         }
+        System.out.println("No recipe matches your food allergies.");
         return null;
     }
 
-    public Recipe recipe_without_FoodAllergies(String FoodAllergies) {
-        for (Recipe recipe : recipes) {
-            if (recipe.getFoodAllergies().equals(FoodAllergies)) {
-                System.out.println(" this recipe without: " + FoodAllergies + recipe.getDescription() +
-                        "\n" + recipe.getPrepTime() +
-                        "\n" + recipe.getDifficulty() + "\n" + recipe.getRating());
-                return recipe;
-            }
-            System.out.println(" doesnt exist");
-        }
-        return null;
-    }
 
     public Recipe recipe_with_ditearyNeeds(String dietaryNeeds) {
         for (Recipe recipe : recipes) {
-            if (recipe.getDietaryNeeds().equals(dietaryNeeds)) {
-                System.out.println(" this recipe with your dietaryNeed : " + dietaryNeeds + recipe.getDescription() +
-                        "\n" + recipe.getPrepTime() +
-                        "\n" + recipe.getDifficulty() + "\n" + recipe.getRating());
+            // Check if dietaryNeeds in recipe is not null before comparing
+            String recipeDietaryNeeds = recipe.getDietaryNeeds();
+            if (recipeDietaryNeeds != null && recipeDietaryNeeds.equals(dietaryNeeds)) {
+                System.out.println("This recipe matches your dietary needs: "
+                        + dietaryNeeds + "\nDescription: " + recipe.getDescription()
+                        + "\nPreparation Time: " + recipe.getPrepTime()
+                        + "\nDifficulty: " + recipe.getDifficulty()
+                        + "\nRating: " + recipe.getRating());
                 return recipe;
             }
-            System.out.println(" doesnt exist");
         }
+        System.out.println("No recipe matches your dietary needs.");
         return null;
     }
+
 
     public Recipe Filter_by_both(String dietaryNeeds, String foodAllergies) {
         for (Recipe recipe : recipes) {
-            if (recipe.getDietaryNeeds().equals(dietaryNeeds) && recipe.getFoodAllergies().equals(foodAllergies)) {
-                System.out.println(" this recipe with your dietaryNeed : " + dietaryNeeds + "Without foodAllergies" + recipe.getFoodAllergies() + recipe.getDescription() +
-                        "\n" + recipe.getPrepTime() +
-                        "\n" + recipe.getDifficulty() + "\n" + recipe.getRating());
+            // Get the dietary needs and food allergies from the recipe
+            String recipeDietaryNeeds = recipe.getDietaryNeeds();
+            String recipeFoodAllergies = recipe.getFoodAllergies();
+
+            // Check if both are not null before comparing
+            if (recipeDietaryNeeds != null && recipeDietaryNeeds.equals(dietaryNeeds)
+                    && recipeFoodAllergies != null && recipeFoodAllergies.equals(foodAllergies)) {
+                System.out.println("This recipe matches your dietary needs: " + dietaryNeeds
+                        + " and avoids food allergies: " + foodAllergies
+                        + "\nDescription: " + recipe.getDescription()
+                        + "\nPreparation Time: " + recipe.getPrepTime()
+                        + "\nDifficulty: " + recipe.getDifficulty()
+                        + "\nRating: " + recipe.getRating());
                 return recipe;
             }
-            System.out.println(" doesnt exist");
         }
+        System.out.println("No recipe matches your criteria.");
         return null;
-
     }
+
 
     public void filterRecipe() {
         Recipe recipe = new Recipe();
@@ -297,7 +353,7 @@ public class BeneficiaryUser {
 
     public void submitFeedback(String rating, String comment) {
         if (this.selectedProduct == null) {
-            displayError("No product selected for feedback.");
+            displayError("Cannot provide feedback on an unpurchased product");
             return;
         }
 
@@ -318,17 +374,27 @@ public class BeneficiaryUser {
     }
 
     public void verifyFeedbackLog(String itemName, String rating, String comment, String feedbackDate, String feedbackStatus) {
-        for (Feedback feedback : selectedProduct.getFeedbackList()) { //  list of feedback in selectedProduct
-            if (feedback.getRating().equals(rating) &&
-                    feedback.getComment().equals(comment) &&
-                    feedback.getFeedbackDate().equals(feedbackDate) &&
-                    feedback.getFeedbackStatus().equals(feedbackStatus)) {
-                System.out.println("Feedback verified successfully.");
-                return;
+        if (selectedProduct == null) {
+            System.out.println("Error: No product selected for feedback verification.");
+            return;  // Early return if no product is selected
+        }
+
+        List<Feedback> feedbackList = selectedProduct.getFeedbackList();
+        boolean feedbackFound = false;
+
+        for (Feedback feedback : feedbackList) {
+            if (feedback.matches(itemName, rating, comment, feedbackDate, feedbackStatus)) {
+                feedbackFound = true;
+                break;
             }
         }
-        displayError("Feedback verification failed.");
+
+        if (!feedbackFound) {
+            System.out.println("Error: Feedback entry not found in the feedback log.");
+            throw new AssertionError("Expected feedback entry not found.");
+        }
     }
+
 
     public String getConfirmationMessage() {
         return "Your action was successful!"; // This could be dynamic based on the last action
@@ -345,29 +411,72 @@ public class BeneficiaryUser {
         purchasedProducts.add(product);
     }
 
+
     public String getRedirectPage() {
-        boolean purchaseSuccessful = checkIfPurchaseSuccessful(); // Implement this method as needed
-
-        if (purchaseSuccessful) {
-            return "order_summary"; // Page to show order summary
-        } else {
-            return "desserts_page"; // Page to go back to desserts if something went wrong
-        }
-
+        boolean purchaseSuccessful = checkIfPurchaseSuccessful();
+        return  "order_summary" ;
     }
-
 
     public String getPurchaseMessage() {
         boolean purchaseSuccessful = checkIfPurchaseSuccessful();
-
         if (purchaseSuccessful) {
             return "Purchase successful";
+        } else if (p.getAvailability()==" ") {
+            return "Dessert is out of stock";
         } else {
-            return "Dessert is out of stock or some other issue occurred";
+            return "An issue occurred during purchase";
         }
     }
 
     public void updateDetails(String userID, String username, String email, String phone, int age, String password, String dietaryNeeds, String foodAllergies) {
+        if (userID == null || userID.isEmpty()) {
+            throw new IllegalArgumentException("User ID cannot be empty");
+        }
 
     }
+    /////////////////////////////////////
+    public Recipe searchRecipeBySweetname(String sweetname) {
+        if (sweetname == null || sweetname.isEmpty()) {
+            System.err.println("Sweetname is null or empty.");
+            return null;
+        }
+
+        for (Recipe recipe : recipes) {
+            System.out.println("Checking recipe: " + recipe.getSweetname());
+
+            if (recipe.getSweetname() != null && recipe.getSweetname().equalsIgnoreCase(sweetname)) {
+                System.out.println("Found recipe: " + recipe.getSweetname());
+                return recipe;
+            }
+        }
+
+        System.err.println("No recipe found for sweet name: " + sweetname);
+        return null;
+    }
+
+
+    ////////////////// temprory user values
+    public String getUsername() {
+
+        return "validuser";
+    }
+
+    public String getEmail() {
+        return "validemail";}
+
+    public String getPhone() {
+        return "0599873421";}
+
+    public String getAge() {
+        return "21"; }
+
+    public String getPassword()
+    {
+        return "12345678a@"; }
+
+    public String getFoodAllergies() {
+        return "Gluten"; }
+
+
+
 }

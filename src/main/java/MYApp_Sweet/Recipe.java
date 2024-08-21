@@ -1,4 +1,7 @@
+
 package MYApp_Sweet;
+
+import static MYApp_Sweet.BeneficiaryUser.recipes;
 
 public class Recipe {
     private String category;
@@ -20,19 +23,32 @@ public class Recipe {
     {
 
 
-        this.username="validuser";
+      /*  this.username="validuser";
         this.email="validemail";
         this.phone="2348597";
         this.password="12345678@";
         this.foodAllergies="Gloten";
         this.sweetname="Choclate Cake";
         this.category = "Cakes";
-        this.description = "Delicious chocolate cake ";
+        this.description = "TangyAndSweetLemonCookies ";
         //this.imageUrl = imageUrl;
         this.prepTime = 60;
         this.difficulty = "Medium ";
         this.rating = 4.5;
-        this.dietaryNeeds="vegan";
+        this.dietaryNeeds="vegan";*/
+        // this.description = "TangyAndSweetLemonCookies";
+    }
+
+    public Recipe(String sweetname, String category, String description, int prepTime, String difficulty, double rating)
+    {
+
+        this.sweetname = sweetname;  // Ensure this line is included
+        this.category = category;
+        this.description = description;
+        this.prepTime = prepTime;
+        this.difficulty = difficulty;
+        this.rating = rating;
+
     }
 
     /*public Recipe(String farah, String mail, String number, String sweet24, String gloten, String cakes, String deliciousChocolateCake, int i, String medium, double v)
@@ -146,6 +162,15 @@ public class Recipe {
     public String getDietaryNeeds() {
         return dietaryNeeds;
     }
+    public Recipe searchRecipeBySweetname(String sweetname) {
+        for (Recipe recipe : recipes) {
+            if (recipe.getSweetname() != null && recipe.getSweetname().equalsIgnoreCase(sweetname)) {
+                return recipe;
+            }
+        }
+        return null; // or throw an exception if appropriate
+    }
+
     /* public Object findRecipeByName(String name) {
         // For now, return a dummy Recipe object or find the actual one
         return new Recipe("username", "email", "phone", "password", "foodAllergies", name, "category", "description", 30, "medium", 4.5);

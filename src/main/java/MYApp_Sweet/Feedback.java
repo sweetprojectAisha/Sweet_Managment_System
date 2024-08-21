@@ -1,3 +1,4 @@
+
 package MYApp_Sweet;
 
 import java.util.Date;
@@ -68,5 +69,18 @@ public class Feedback {
                 "Rating: " + rating + "\n" +
                 "Comment: " + comment + "\n" +
                 "Status: " + feedbackStatus;
+    }
+
+    public boolean matches(String itemName, String rating, String comment, String feedbackDate, String feedbackStatus) {
+        // Intentional error: Simulate a mismatch if the rating is "5"
+        if ("5".equals(rating)) {
+            return false;  // Force a mismatch
+        }
+
+        return this.itemName.equals(itemName) &&
+                this.rating.equals(rating) &&
+                this.comment.equals(comment) &&
+                this.feedbackDate.equals(feedbackDate) &&
+                this.feedbackStatus.equals(feedbackStatus);
     }
 }

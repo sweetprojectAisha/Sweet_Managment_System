@@ -672,7 +672,7 @@ public class Main {
             System.out.println("14. Update Personal Account");
             System.out.println("15. Delete Personal Account");
             System.out.println("15. Delete Personal Account");
-            System.out.println("16. Handle Orders"); // New option
+            System.out.println("16. Handle Orders");
             System.out.println("17. Log Out");
             System.out.print("Please choose an option: ");
 
@@ -1152,7 +1152,132 @@ public class Main {
     }
 
     private static void handleUserPage(MyApp app, String username) {
-        System.out.println("Welcome to the User Home Page.");
+        System.out.println("Welcome to the User Home Page, " + username + ".");
+        Scanner scanner = new Scanner(System.in);
+        PersonalAccount pro=PersonalAccount.getInstance();
+        PersonalAccount.PersonalProfile profile = pro.getProfile(username);
+while (true) {
+    System.out.println("Please choose an option:");
+    System.out.println("1. Manage Account");
+    System.out.println("2. Browse Recipes");
+    System.out.println("3. Filter Recipes by Dietary Needs or Allergies");
+    System.out.println("4. Purchase Desserts");
+    System.out.println("5. Communicate with Store Owners/Suppliers");
+    System.out.println("6. Provide Feedback");
+    System.out.println("7. Post a Dessert Creation");
+    System.out.println("8. Logout");
+    String option = scanner.nextLine();
+    switch (option) {
+        case "1":
+            manageAccount(pro, username);
+            break;
+        case "2":
+            browseRecipes(app);
+            break;
+        case "3":
+            filterRecipes(app);
+            break;
+        case "4":
+            purchaseDesserts(app);
+            break;
+        case "5":
+            communicateWithOwners(app);
+            break;
+        case "6":
+            provideFeedback(app);
+            break;
+        case "7":
+            postDessertCreation(app, username);
+            break;
+        case "8":
+            logout(app, username);
+            break;
+        default:
+            System.out.println("Invalid option. Please try again.");
+            handleUserPage(app, username);
+            break;
+    }
+}
 
+    }
+    private static void manageAccount(PersonalAccount app, String username) {
+        Scanner scanner = new Scanner(System.in);
+        PersonalAccount pro=PersonalAccount.getInstance();
+        PersonalAccount.PersonalProfile profile = pro.getProfile(username);
+        System.out.println("Account Management:");
+        System.out.println("1. View Account");
+        System.out.println("2. Update Account");
+        System.out.println("3. Delete Account");
+        System.out.println("4. Go Back");
+
+        String choice = scanner.nextLine();
+        switch (choice) {
+            case "1":
+                viewPersonalAccount(app, username);
+                break;
+            case "2":
+                updatePersonalAccount(app, username, scanner);
+                break;
+            case "3":
+                deletePersonalAccount(app, username);
+                break;
+            case "4":
+                return;
+            default:
+                System.out.println("Invalid option. Please try again.");
+                manageAccount(app, username);
+                break;
+        }
+    }
+    private static void browseRecipes(MyApp app, Scanner scanner) {
+        System.out.print("Enter the category to browse: ");
+        String category = scanner.nextLine();
+        Recipe recipe = app.browseAllRecipes(category);
+        if (recipe != null) {
+            System.out.println("Found recipe: " + recipe.getSweetname());
+        } else {
+            System.out.println("No recipes found in this category.");
+        }
+    }
+
+    private static void filterRecipes(BeneficiaryUser app, Scanner scanner) {
+        System.out.print("Enter dietary needs: ");
+        String dietaryNeeds = scanner.nextLine();
+        System.out.print("Enter food allergies: ");
+        String foodAllergies = scanner.nextLine();
+
+        List<Recipe> filteredRecipes = app.filterByDietaryNeedsAndFoodAllergies(dietaryNeeds, foodAllergies);
+        if (!filteredRecipes.isEmpty()) {
+            System.out.println("Filtered recipes found:");
+            for (Recipe recipe : filteredRecipes) {
+                System.out.println("Recipe: " + recipe.getSweetname());
+            }
+        } else {
+            System.out.println("No matching recipes found.");
+        }
+    }
+
+
+    private static void purchaseProduct(BeneficiaryUser app, Scanner scanner) {
+        System.out.print("Enter product name: ");
+        String productName = scanner.nextLine();
+        System.out.print("Enter purchase date (YYYY-MM-DD): ");
+        String purchaseDate = scanner.nextLine();
+
+        if (app.purchaseProduct(productName, purchaseDate)) {
+            System.out.println("Product purchased successfully.");
+        } else {
+            System.out.println("Product not found or purchase failed.");
+        }
+    }
+
+    private static void communicateSupport(MyApp app, Scanner scanner) {
+        System.out.print("Enter contact name: ");
+        String contactName = scanner.nextLine();
+        System.out.print("Enter inquiry message: ");
+        String message = scanner.nextLine();
+
+        String response = app.sendInquiry(contactName, message);
+        System.out.println("Response: " + response);
     }
 }
