@@ -2,11 +2,16 @@ package MYApp_Sweet;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DisplayStatisticsByCityC {
     private static DisplayStatisticsByCityC instance;
     private Map<String, Integer> userCountByCity;
     private Map<String, User> users;
+
+    // Create a logger for this class
+    private static final Logger LOGGER = Logger.getLogger(DisplayStatisticsByCityC.class.getName());
 
     private DisplayStatisticsByCityC() {
         userCountByCity = new HashMap<>();
@@ -24,7 +29,9 @@ public class DisplayStatisticsByCityC {
         User user = new User(name, city);
         users.put(name, user);
         registerUser(city);
-        System.out.println("User " + name + " from " + city + " has been registered.");
+        
+        // Log the user registration event
+        LOGGER.log(Level.INFO, "User {0} from {1} has been registered.", new Object[]{name, city});
     }
 
     private void registerUser(String city) {
