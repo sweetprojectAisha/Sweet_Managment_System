@@ -1,3 +1,0 @@
-Downtown Store,2,Widget B,30,600.0,600.0
-Uptown Store,1,Widget A,60,900.0,900.0
-Uptown Store,3,Widget B,5,100.0,100.0

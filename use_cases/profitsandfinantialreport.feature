@@ -14,7 +14,7 @@ Feature: Financial Management and Best-Selling Products
       | ID | Name       | Quantity Sold | Selling Price |
       | 1  | Widget A   | 10            | 15.00         |
       | 2  | Widget B   | 5             | 20.00         |
-    Then the total sales should be 1850.0
+    Then the total sales should be 250.0
     And the total profit should be 250.0
     Then the financial report should include:
       | Total Sales | Total Profit |

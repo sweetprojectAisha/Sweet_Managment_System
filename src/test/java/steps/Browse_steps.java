@@ -49,8 +49,8 @@ public class Browse_steps {
                 System.err.println("Error parsing number: " + ex.getMessage());
             }
         }
-        obj.setRecipes(recipes); // Assuming BeneficiaryUser has a setRecipes method
-        assertNotNull("Recipes should not be null", obj.getRecipes()); // Ensure recipes are set
+        obj.setRecipes(recipes);
+        assertNotNull("Recipes should not be null", obj.getRecipes());
         assertFalse("Recipes list should not be empty", obj.getRecipes().isEmpty()); // Ensure list is not empty
     }
 
