@@ -42,15 +42,15 @@ public class Browse_steps {
                     rating = Double.parseDouble(ratingStr);
                 }
 
-                Recipe recipe = new Recipe(name, category, description, prepTime, difficulty, rating,"","");
+                 Recipe recipe = new Recipe(name, category, description, prepTime, difficulty, rating,"","");
                 recipes.add(recipe);
                 System.out.println("Added recipe with sweetname: " + recipe.getSweetname());
             } catch (NumberFormatException ex) {
                 System.err.println("Error parsing number: " + ex.getMessage());
             }
         }
-        obj.setRecipes(recipes);
-        assertNotNull("Recipes should not be null", obj.getRecipes());
+        obj.setRecipes(recipes); // Assuming BeneficiaryUser has a setRecipes method
+        assertNotNull("Recipes should not be null", obj.getRecipes()); // Ensure recipes are set
         assertFalse("Recipes list should not be empty", obj.getRecipes().isEmpty()); // Ensure list is not empty
     }
 

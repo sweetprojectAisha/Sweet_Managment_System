@@ -1,4 +1,3 @@
-
 package MYApp_Sweet;
 import io.cucumber.java.Before;
 import MYApp_Sweet.PurchasedProduct;
@@ -6,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class BeneficiaryUser {
     public static List<Recipe> recipes = new ArrayList<>(); // Initialize the static list
@@ -34,21 +32,10 @@ public class BeneficiaryUser {
     public BeneficiaryUser(List<Recipe> recipes) {
         this.recipes = recipes;
     }
-
-   /* public BeneficiaryUser(String username, String email, String phone, String age, String password, String foodAllergies)
-    {
-        username="validuser";
-        email="validemail";
-        phone="0599873421";
-        age="21";
-        password="12345678a@";
-        foodAllergies="Gluten";
-    }*/
-
-
+    public void addRecipe(Recipe recipe) {
+        recipes.add(recipe);
+    }
     // purchased
-
-
     private boolean checkIfPurchaseSuccessful() {
         // Check if there is a selected product
         if (this.selectedProduct == null) return false; // No product selected
@@ -108,27 +95,7 @@ public class BeneficiaryUser {
         return null;
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////
-  /*  public void clickSearch() {
-        // Simulate clicking search
-        System.out.println("Search button clicked");
-    }
 
-    public Recipe searchRecipe(String name) {
-        // System.out.println(" the recipe of: " + name);
-        for (Recipe recipe : recipes) {
-            if (recipe.getSweetname().equals(name)) {
-                System.out.println(" the recipe of: " + name + recipe.getDescription() +
-                        "\n" + recipe.getFoodAllergies() + "\n" + recipe.getPrepTime() +
-                        "\n" + recipe.getDifficulty() + "\n" + recipe.getRating());
-                return recipe;
-            }
-            System.out.println(" doesnt exist");
-        }
-        return null;
-    }*/
-
-    ///
     public void fillname_category(String name, String category) {
         // Lazy initialization of the errors map
         if (errors == null) {
@@ -169,11 +136,23 @@ public class BeneficiaryUser {
     }
 
     ///////////////////////////////////
-    public List<Recipe> filterByDietaryNeedsAndFoodAllergies(String dietaryNeeds, String foodAllergies) {
-        return recipes.stream()
-                .filter(recipe -> dietaryNeeds.equals(recipe.getDietaryNeeds()) &&
-                        foodAllergies.equals(recipe.getFoodAllergies()))
-                .collect(Collectors.toList());
+    public Recipe filter_by_FoodAllergiesAndIngredient(String dietaryNeeds, String foodAllergies) {
+        for (Recipe recipe : recipes) {
+            // Check if dietaryNeeds is null or empty
+            if (recipe.getDietaryNeeds() != null && recipe.getDietaryNeeds().equals(dietaryNeeds) &&
+                    recipe.getFoodAllergies() != null && recipe.getFoodAllergies().equals(foodAllergies)) {
+
+                System.out.println("This recipe matches your dietary needs: " + dietaryNeeds +
+                        " and has no food allergies: " + foodAllergies +
+                        "\nDescription: " + recipe.getDescription() +
+                        "\nPrep Time: " + recipe.getPrepTime() +
+                        "\nDifficulty: " + recipe.getDifficulty() +
+                        "\nRating: " + recipe.getRating());
+                return recipe;
+            }
+        }
+        System.out.println("No recipe matches your dietary needs and food allergies.");
+        return null;
     }
 
 
@@ -193,7 +172,6 @@ public class BeneficiaryUser {
         System.out.println("No recipe matches your food allergies.");
         return null;
     }
-
 
 
     public Recipe recipe_with_ditearyNeeds(String dietaryNeeds) {
@@ -297,7 +275,7 @@ public class BeneficiaryUser {
         }
     }
 
-    //communicate ****************************
+    //communicate **************************
     public void selectContact(String contactName) {
         this.selectedContact = contactName;
         System.out.println("Contact " + contactName + " has been selected.");
@@ -477,10 +455,6 @@ public class BeneficiaryUser {
 
     public String getFoodAllergies() {
         return "Gluten"; }
-
-     public void addRecipe(Recipe recipe) {
-        recipes.add(recipe);
-    }
 
 
 

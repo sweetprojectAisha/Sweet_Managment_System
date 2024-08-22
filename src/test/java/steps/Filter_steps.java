@@ -47,7 +47,7 @@ public class Filter_steps {
 
     @When("the user filters recipes by food allergies and ingredient")
     public void theUserFiltersRecipesByFoodAllergiesAndIngredient() {
-        obj.filterByDietaryNeedsAndFoodAllergies(recipe.getFoodAllergies(),recipe.getDietaryNeeds());
+        obj.filter_by_FoodAllergiesAndIngredient(recipe.getFoodAllergies(),recipe.getDietaryNeeds());
 
 
     }

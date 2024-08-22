@@ -1,4 +1,3 @@
-
 package MYApp_Sweet;
 
 import static MYApp_Sweet.BeneficiaryUser.recipes;
@@ -39,7 +38,8 @@ public class Recipe {
         // this.description = "TangyAndSweetLemonCookies";
     }
 
-    public Recipe(String sweetname, String category, String description, int prepTime, String difficulty, double rating, String foodAllergies, String dietaryNeeds) {
+    public Recipe(String sweetname, String category, String description, int prepTime,
+                  String difficulty, double rating, String foodAllergies, String dietaryNeeds) {
         this.sweetname = sweetname;
         this.category = category;
         this.description = description;
@@ -49,7 +49,6 @@ public class Recipe {
         this.foodAllergies = foodAllergies;
         this.dietaryNeeds = dietaryNeeds;
     }
-
 
     /*public Recipe(String farah, String mail, String number, String sweet24, String gloten, String cakes, String deliciousChocolateCake, int i, String medium, double v)
     {
@@ -170,11 +169,6 @@ public class Recipe {
         }
         return null; // or throw an exception if appropriate
     }
-
-   public void addRecipe(Recipe recipe) {
-        recipes.add(recipe);
-    }
-
 
     /* public Object findRecipeByName(String name) {
         // For now, return a dummy Recipe object or find the actual one

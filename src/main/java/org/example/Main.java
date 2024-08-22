@@ -1223,28 +1223,8 @@ while (true) {
                 break;
         }
     }
-    private static void browseAndSearchRecipes(BeneficiaryUser user, Scanner scanner) {
-        user.addRecipe(new Recipe("Chocolate Cake", "Cakes", "Delicious chocolate cake", 45 , "Medium", 5.0, "None", "Vegan"));
-        user.addRecipe(new Recipe("Apple Pie", "Pies", "Classic apple pie", 60 , "Hard", 4.0, "Apples", "Vegetarian"));
-
-        System.out.println("Enter the category to browse:");
-        String category = scanner.nextLine();
-        Recipe recipe = user.clickBrowseAllRecipes(category);
-        if (recipe != null) {
-            System.out.println("Found recipe: " + recipe.getSweetname() + " - " + recipe.getDescription());
-        } else {
-            System.out.println("No recipes found in this category.");
-        }
-
-        System.out.println("Enter a sweet name to search:");
-        String sweetname = scanner.nextLine();
-        recipe = user.searchRecipeBySweetname(sweetname);
-        if (recipe != null) {
-            System.out.println("Found recipe: " + recipe.getSweetname() + " - " + recipe.getDescription());
-        } else {
-            System.out.println("No recipes found with this sweet name.");
-        }
-    }
+    private static void browseAndSearchRecipes(BeneficiaryUser user, Scanner scanner) { user.addRecipe(new Recipe("Chocolate Cake", "Cakes", "Delicious chocolate cake", 45 , "Medium", 5.0, "None", "Vegan")); user.addRecipe(new Recipe("Apple Pie", "Pies", "Classic apple pie", 60 , "Hard", 4.0, "Apples", "Vegetarian")); System.out.println("Enter the category to browse:"); String category = scanner.nextLine(); Recipe recipe = user.clickBrowseAllRecipes(category); if (recipe != null) { System.out.println("Found recipe: " + recipe.getSweetname() + " - " + recipe.getDescription()); } else { System.out.println("No recipes found in this category.");
+    }}
 
 
     private static void filterRecipesByDietaryNeeds(BeneficiaryUser user, Scanner scanner) {
