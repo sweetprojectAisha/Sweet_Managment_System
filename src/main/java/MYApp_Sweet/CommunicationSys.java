@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CommunicationSys {
     private static CommunicationSys instance;
@@ -12,6 +14,9 @@ public class CommunicationSys {
     private Map<Integer, List<Message>> messages = new HashMap<>();
     private static final String USERS_FILE_NAME = "users.txt";
     private static final String MESSAGES_FILE_NAME = "messages.txt";
+
+    // Create a logger for this class
+    private static final Logger LOGGER = Logger.getLogger(CommunicationSys.class.getName());
 
     // Private constructor for Singleton pattern
     private CommunicationSys() {
@@ -36,17 +41,20 @@ public class CommunicationSys {
                 if (parts.length == 8) {
                     String username = parts[0].trim();
                     String role = parts[6].trim();
-
                     int id = username.hashCode(); // Generate a unique ID from username
                     User user = new User(id, username, role);
                     users.put(id, user);
-                    System.out.println("User added: ID = " + id + ", Username = " + username + ", Role = " + role);
+                    
+                    // Log the user addition
+                    LOGGER.log(Level.INFO, "User added: ID = {0}, Username = {1}, Role = {2}", new Object[]{id, username, role});
                 } else {
-                    System.err.println("Invalid user data format: " + line);
+                    // Log an error if user data is invalid
+                    LOGGER.log(Level.WARNING, "Invalid user data format: {0}", line);
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            // Log the exception
+            LOGGER.log(Level.SEVERE, "Error loading users from file", e);
         }
     }
 
@@ -56,7 +64,9 @@ public class CommunicationSys {
             throw new IllegalStateException("User with ID " + user.getId() + " already exists.");
         }
         users.put(user.getId(), user);
-        System.out.println("User " + user.getUsername() + " added successfully with ID " + user.getId());
+        
+        // Log the successful user addition
+        LOGGER.log(Level.INFO, "User {0} added successfully with ID {1}", new Object[]{user.getUsername(), user.getId()});
     }
 
     // Send a message from sender to receiver
@@ -97,7 +107,8 @@ public class CommunicationSys {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            // Log the exception
+            LOGGER.log(Level.SEVERE, "Error loading messages from file", e);
         }
     }
 
@@ -113,7 +124,8 @@ public class CommunicationSys {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            // Log the exception
+            LOGGER.log(Level.SEVERE, "Error saving messages to file", e);
         }
     }
 
