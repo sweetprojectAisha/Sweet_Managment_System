@@ -19,7 +19,6 @@ public class BeneficiaryUser {
     private PurchasedProduct p;
     /// temp :
     private String username;
-    private String email;
     private String password;
     private String confirmPassword;
     private String phone;
@@ -48,11 +47,13 @@ public class BeneficiaryUser {
         return true;
     }
 
-    private boolean isPurchaseRecorded(String itemName, String purchaseDate) {
-        if (itemName == p.getItemName() && p.getPurchaseDate() == purchaseDate)
-            return true;
-        return false;
+private boolean isPurchaseRecorded(String itemName, String purchaseDate) {
+    if (itemName.equals(p.getItemName()) && purchaseDate.equals(p.getPurchaseDate())) {
+        return true;
     }
+    return false;
+}
+
 
     public boolean isProductInStock(String itemName) {
         // Iterate through available desserts to find the matching item
@@ -346,9 +347,10 @@ public class BeneficiaryUser {
         System.out.println("Feedback submitted successfully.");
     }
 
-    private String getCurrentDate() {
-        return getCurrentDate();
-    }
+private String getCurrentDate() {
+    return java.time.LocalDate.now().toString();
+}
+
 
     public void verifyFeedbackLog(String itemName, String rating, String comment, String feedbackDate, String feedbackStatus) {
         if (selectedProduct == null) {
@@ -433,10 +435,9 @@ public class BeneficiaryUser {
 
 
     ////////////////// temprory user values
-    public String getUsername() {
-
-        return "validuser";
-    }
+   public String getUsername() {
+    return username;
+}
 
     public String getEmail() {
         return "validemail";}
