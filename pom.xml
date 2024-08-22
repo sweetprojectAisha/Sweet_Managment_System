@@ -69,6 +69,16 @@
                     </includes>
                 </configuration>
             </plugin>
+                 <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <version>3.10.0</version> <!-- Updated version -->
+    <configuration>
+        <source>19</source>
+        <target>19</target>
+    </configuration>
+</plugin>
+
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
