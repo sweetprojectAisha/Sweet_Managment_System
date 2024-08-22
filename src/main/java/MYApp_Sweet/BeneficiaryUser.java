@@ -69,7 +69,7 @@ public class BeneficiaryUser {
         return false;
     }
 
-    private boolean isProductInStock(String itemName) {
+    public boolean isProductInStock(String itemName) {
         // Iterate through available desserts to find the matching item
         for (Dessert dessert : availableDesserts) {
             if (itemName.equals(dessert.getDessertName()) && "In Stock".equals(dessert.getAvailability())) {
@@ -193,6 +193,7 @@ public class BeneficiaryUser {
         System.out.println("No recipe matches your food allergies.");
         return null;
     }
+
 
 
     public Recipe recipe_with_ditearyNeeds(String dietaryNeeds) {
@@ -476,6 +477,10 @@ public class BeneficiaryUser {
 
     public String getFoodAllergies() {
         return "Gluten"; }
+
+     public void addRecipe(Recipe recipe) {
+        recipes.add(recipe);
+    }
 
 
 

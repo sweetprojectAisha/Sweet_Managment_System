@@ -2,10 +2,7 @@ package org.example;
 
 import MYApp_Sweet.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
 // then press Enter. You can now see whitespace characters in your code.
@@ -1156,51 +1153,48 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         PersonalAccount pro=PersonalAccount.getInstance();
         PersonalAccount.PersonalProfile profile = pro.getProfile(username);
+        BeneficiaryUser user = new BeneficiaryUser();
 while (true) {
     System.out.println("Please choose an option:");
     System.out.println("1. Manage Account");
-    System.out.println("2. Browse Recipes");
-    System.out.println("3. Filter Recipes by Dietary Needs or Allergies");
-    System.out.println("4. Purchase Desserts");
-    System.out.println("5. Communicate with Store Owners/Suppliers");
-    System.out.println("6. Provide Feedback");
-    System.out.println("7. Post a Dessert Creation");
-    System.out.println("8. Logout");
-    String option = scanner.nextLine();
-    switch (option) {
-        case "1":
-            manageAccount(pro, username);
+    System.out.println("2. Browse and search for dessert recipes");
+    System.out.println("3. Filter recipes based on dietary needs or food allergies");
+    System.out.println("4. Purchase desserts directly from store owners");
+    System.out.println("5. Communicate with store owners and suppliers");
+    System.out.println("6. Provide feedback on purchased products and shared recipes");
+    System.out.println("7. Exit");
+
+    int choice = scanner.nextInt();
+    scanner.nextLine();
+
+    switch (choice) {
+        case 1:
+            manageAccount(app, username);
             break;
-        case "2":
-            browseRecipes(app);
+        case 2:
+            browseAndSearchRecipes(user, scanner);
             break;
-        case "3":
-            filterRecipes(app);
+        case 3:
+            filterRecipesByDietaryNeeds(user, scanner);
             break;
-        case "4":
-            purchaseDesserts(app);
+        case 4:
+            purchaseDesserts(user, scanner);
             break;
-        case "5":
-            communicateWithOwners(app);
+        case 5:
+            communicateWithStoreOwners(user, scanner);
             break;
-        case "6":
-            provideFeedback(app);
+        case 6:
+            provideFeedback(user, scanner);
             break;
-        case "7":
-            postDessertCreation(app, username);
-            break;
-        case "8":
-            logout(app, username);
-            break;
+        case 7:
+            System.out.println("Thank you for using Sweet Pal. Goodbye!");
+            return;
         default:
-            System.out.println("Invalid option. Please try again.");
-            handleUserPage(app, username);
-            break;
+            System.out.println("Invalid choice. Please try again.");
     }
 }
-
     }
-    private static void manageAccount(PersonalAccount app, String username) {
+    private static void manageAccount(MyApp app, String username) {
         Scanner scanner = new Scanner(System.in);
         PersonalAccount pro=PersonalAccount.getInstance();
         PersonalAccount.PersonalProfile profile = pro.getProfile(username);
@@ -1229,55 +1223,120 @@ while (true) {
                 break;
         }
     }
-    private static void browseRecipes(MyApp app, Scanner scanner) {
-        System.out.print("Enter the category to browse: ");
+    private static void browseAndSearchRecipes(BeneficiaryUser user, Scanner scanner) {
+        user.addRecipe(new Recipe("Chocolate Cake", "Cakes", "Delicious chocolate cake", 45 , "Medium", 5.0, "None", "Vegan"));
+        user.addRecipe(new Recipe("Apple Pie", "Pies", "Classic apple pie", 60 , "Hard", 4.0, "Apples", "Vegetarian"));
+
+        System.out.println("Enter the category to browse:");
         String category = scanner.nextLine();
-        Recipe recipe = app.browseAllRecipes(category);
+        Recipe recipe = user.clickBrowseAllRecipes(category);
         if (recipe != null) {
-            System.out.println("Found recipe: " + recipe.getSweetname());
+            System.out.println("Found recipe: " + recipe.getSweetname() + " - " + recipe.getDescription());
         } else {
             System.out.println("No recipes found in this category.");
         }
+
+        System.out.println("Enter a sweet name to search:");
+        String sweetname = scanner.nextLine();
+        recipe = user.searchRecipeBySweetname(sweetname);
+        if (recipe != null) {
+            System.out.println("Found recipe: " + recipe.getSweetname() + " - " + recipe.getDescription());
+        } else {
+            System.out.println("No recipes found with this sweet name.");
+        }
     }
 
-    private static void filterRecipes(BeneficiaryUser app, Scanner scanner) {
-        System.out.print("Enter dietary needs: ");
+
+    private static void filterRecipesByDietaryNeeds(BeneficiaryUser user, Scanner scanner) {
+        //  Prompt the user to enter dietary needs or food allergies
+        System.out.println("Enter your dietary needs:");
         String dietaryNeeds = scanner.nextLine();
-        System.out.print("Enter food allergies: ");
+        System.out.println("Enter your food allergies:");
         String foodAllergies = scanner.nextLine();
-
-        List<Recipe> filteredRecipes = app.filterByDietaryNeedsAndFoodAllergies(dietaryNeeds, foodAllergies);
-        if (!filteredRecipes.isEmpty()) {
-            System.out.println("Filtered recipes found:");
-            for (Recipe recipe : filteredRecipes) {
-                System.out.println("Recipe: " + recipe.getSweetname());
-            }
+        //  Filter recipes based on dietary needs and food allergies
+        Recipe filteredRecipe = user.Filter_by_both(dietaryNeeds, foodAllergies);
+        //  Display the filtered recipe details or notify if no match is found
+        if (filteredRecipe != null) {
+            System.out.println("Filtered recipe based on your dietary needs and food allergies:");
+            System.out.println("Description: " + filteredRecipe.getDescription());
+            System.out.println("Preparation Time: " + filteredRecipe.getPrepTime());
+            System.out.println("Difficulty: " + filteredRecipe.getDifficulty());
+            System.out.println("Rating: " + filteredRecipe.getRating());
         } else {
-            System.out.println("No matching recipes found.");
+            System.out.println("No recipes match your dietary needs and food allergies.");
         }
     }
 
 
-    private static void purchaseProduct(BeneficiaryUser app, Scanner scanner) {
-        System.out.print("Enter product name: ");
-        String productName = scanner.nextLine();
-        System.out.print("Enter purchase date (YYYY-MM-DD): ");
-        String purchaseDate = scanner.nextLine();
-
-        if (app.purchaseProduct(productName, purchaseDate)) {
-            System.out.println("Product purchased successfully.");
-        } else {
-            System.out.println("Product not found or purchase failed.");
+    private static void purchaseDesserts(BeneficiaryUser user, Scanner scanner) {
+        // Ask the user to enter the dessert name they want to purchase
+        System.out.println("Enter the dessert name to purchase:");
+        String dessertName = scanner.nextLine();
+        //  Check if the dessert is in stock
+        if (!user.isProductInStock(dessertName)) {
+            System.out.println("Dessert is out of stock.");
+            return;
+        }
+        //  Collect other required details for the purchase
+        System.out.println("Enter the price of the dessert:");
+        double price = scanner.nextDouble();
+        scanner.nextLine();
+        String currentDate = new Date().toString(); //  the current date for the purchase
+        //  Add the purchased product to the user's purchased products list
+        user.addPurchasedProduct(dessertName, price, currentDate);
+        //  Get the purchase status message and display it
+        String purchaseMessage = user.getPurchaseMessage();
+        System.out.println(purchaseMessage);
+        //  If the purchase was successful, redirect the user to the order summary page
+        if (purchaseMessage.equals("Purchase successful")) {
+            String redirectPage = user.getRedirectPage();
+            System.out.println("Redirecting to: " + redirectPage);
         }
     }
 
-    private static void communicateSupport(MyApp app, Scanner scanner) {
-        System.out.print("Enter contact name: ");
+
+    private static void communicateWithStoreOwners(BeneficiaryUser user, Scanner scanner) {
+        //  Select a contact to communicate with
+        System.out.println("Enter the name of the store owner or supplier you want to contact:");
         String contactName = scanner.nextLine();
-        System.out.print("Enter inquiry message: ");
-        String message = scanner.nextLine();
+        user.selectContact(contactName);
 
-        String response = app.sendInquiry(contactName, message);
+        //  Send the inquiry message
+        System.out.println("Enter your message for the store owner or supplier:");
+        String message = scanner.nextLine();
+        user.sendInquiry(message);
+
+        //  Display the response received
+        String response = user.getResponse();
         System.out.println("Response: " + response);
+
+        // Display the communication log
+        System.out.println("Communication log:");
+        List<String> communicationLog = user.getCommunicationLog();
+        for (String logEntry : communicationLog) {
+            System.out.println(logEntry);
+        }
     }
+
+
+    private static void provideFeedback(BeneficiaryUser user, Scanner scanner) {
+        System.out.println("Enter the name of the purchased product or shared recipe:");
+        String productName = scanner.nextLine();
+        System.out.println("Enter your rating (e.g., 1 to 5):");
+        String rating = scanner.nextLine();
+        System.out.println("Enter your comment:");
+        String comment = scanner.nextLine();
+        System.out.println("Enter feedback status (e.g., 'Public', 'Private'):");
+        String feedbackStatus = scanner.nextLine();
+        Feedback feedback = new Feedback(productName, rating, comment, feedbackStatus);
+        System.out.println("Feedback submitted for " + productName + ":");
+        System.out.println(feedback);
+
+        if (feedback.matches(productName, rating, comment, feedback.getFeedbackDate(), feedbackStatus)) {
+            System.out.println("Feedback matches the expected criteria.");
+        } else {
+            System.out.println("There was an issue with the feedback submission.");
+        }
+    }
+
 }

@@ -42,7 +42,7 @@ public class Browse_steps {
                     rating = Double.parseDouble(ratingStr);
                 }
 
-                Recipe recipe = new Recipe(name, category, description, prepTime, difficulty, rating);
+                Recipe recipe = new Recipe(name, category, description, prepTime, difficulty, rating,"","");
                 recipes.add(recipe);
                 System.out.println("Added recipe with sweetname: " + recipe.getSweetname());
             } catch (NumberFormatException ex) {
