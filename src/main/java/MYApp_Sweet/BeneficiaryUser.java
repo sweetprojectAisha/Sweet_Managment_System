@@ -436,7 +436,7 @@ private String getCurrentDate() {
 
     ////////////////// temprory user values
    public String getUsername() {
-    return username;
+    return "validuser";
 }
 
     public String getEmail() {
