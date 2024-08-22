@@ -1,3 +1,4 @@
+
 package MYApp_Sweet;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,12 +48,12 @@ public class BeneficiaryUser {
         return true;
     }
 
-private boolean isPurchaseRecorded(String itemName, String purchaseDate) {
-    if (itemName.equals(p.getItemName()) && purchaseDate.equals(p.getPurchaseDate())) {
-        return true;
+    private boolean isPurchaseRecorded(String itemName, String purchaseDate) {
+        if (itemName.equals(p.getItemName()) && purchaseDate.equals(p.getPurchaseDate())) {
+            return true;
+        }
+        return false;
     }
-    return false;
-}
 
 
     public boolean isProductInStock(String itemName) {
@@ -347,9 +348,9 @@ private boolean isPurchaseRecorded(String itemName, String purchaseDate) {
         System.out.println("Feedback submitted successfully.");
     }
 
-private String getCurrentDate() {
-    return java.time.LocalDate.now().toString();
-}
+    private String getCurrentDate() {
+        return java.time.LocalDate.now().toString();
+    }
 
 
     public void verifyFeedbackLog(String itemName, String rating, String comment, String feedbackDate, String feedbackStatus) {
@@ -435,9 +436,9 @@ private String getCurrentDate() {
 
 
     ////////////////// temprory user values
-   public String getUsername() {
-    return "validuser";
-}
+    public String getUsername() {
+        return "validuser";
+    }
 
     public String getEmail() {
         return "validemail";}
