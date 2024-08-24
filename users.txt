@@ -1,5 +1,1 @@
-johndoe,johndoe@example.com,password123,password123,1234567890,30,admin,New York
-janedoe,janedoe@example.com,password123,password123,0987654321,28,user,Los Angeles
-bob,bob@example.com,password789,password789,4444444444,35,user,Houston
-alice,alice@example.com,password456,password456,5555555555,25,owner,Chicago
-aisha,aisha@a.com,12345678,12345678,1234567890,21,user,jenin
+
