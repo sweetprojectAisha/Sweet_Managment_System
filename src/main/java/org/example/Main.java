@@ -1,6 +1,6 @@
 package org.example;
 
-import myapp_sweet.*;
+import MYApp_Sweet.*;
 
 import java.util.*;
 
