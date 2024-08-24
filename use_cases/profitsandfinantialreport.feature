@@ -31,4 +31,3 @@ Feature: Financial Management and Best-Selling Products
       | Store | Best-Selling Product | Quantity Sold |
       | Store1| Widget A             | 50            |
       | Store2| Widget B            | 30            |
-
