@@ -20,9 +20,9 @@ public class MyApp {
         }
         return instance;
     }
-public MyApp(){
-        loadUsers();
-}
+// public MyApp(){
+//         loadUsers();
+// }
 
 
 
@@ -109,7 +109,7 @@ public MyApp(){
             throw new IllegalStateException(errorMessage);
         }
         users.put(user.getUsername(), user);
-        saveUsers();
+        // saveUsers();
         currentPage = "loginPage";
         logger.info("User with name: " + user.getUsername() + " signed up successfully.");
     }
@@ -121,75 +121,75 @@ public MyApp(){
     private boolean userExists(String name) {
         return users.containsKey(name);
     }
-    public void loadUsers() {
-        try (BufferedReader reader = new BufferedReader(new FileReader("users.txt"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length == 8) {
-                    String username = parts[0];
-                    String email = parts[1];
-                    String password = parts[2];
-                    String confirmPassword = parts[3];
-                    String phone = parts[4];
-                    int age;
-                    try {
-                        age = Integer.parseInt(parts[5]);
-                    } catch (NumberFormatException e) {
-                        System.out.println("Invalid age format for user: " + username);
-                        continue;
-                    }
-                    String type = parts[6];
-                    String city = parts[7];
+    // public void loadUsers() {
+    //     try (BufferedReader reader = new BufferedReader(new FileReader("users.txt"))) {
+    //         String line;
+    //         while ((line = reader.readLine()) != null) {
+    //             String[] parts = line.split(",");
+    //             if (parts.length == 8) {
+    //                 String username = parts[0];
+    //                 String email = parts[1];
+    //                 String password = parts[2];
+    //                 String confirmPassword = parts[3];
+    //                 String phone = parts[4];
+    //                 int age;
+    //                 try {
+    //                     age = Integer.parseInt(parts[5]);
+    //                 } catch (NumberFormatException e) {
+    //                     System.out.println("Invalid age format for user: " + username);
+    //                     continue;
+    //                 }
+    //                 String type = parts[6];
+    //                 String city = parts[7];
 
 
-                    users.put(username, new User(username, email, password, confirmPassword, phone, age, type, city));
-                } else {
-                    System.out.println("Invalid user data format: " + line);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    //                 users.put(username, new User(username, email, password, confirmPassword, phone, age, type, city));
+    //             } else {
+    //                 System.out.println("Invalid user data format: " + line);
+    //             }
+    //         }
+    //     } catch (IOException e) {
+    //         e.printStackTrace();
+    //     }
+    // }
 
 
 
 
 
-    public void saveUsers() {
-        try (FileWriter writer = new FileWriter("users.txt")) {
-            for (Map.Entry<String, MyApp.User> entry : users.entrySet()) {
-                MyApp.User user = entry.getValue();
-                writer.write(serializeUser(user) + System.lineSeparator());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    // public void saveUsers() {
+    //     try (FileWriter writer = new FileWriter("users.txt")) {
+    //         for (Map.Entry<String, MyApp.User> entry : users.entrySet()) {
+    //             MyApp.User user = entry.getValue();
+    //             writer.write(serializeUser(user) + System.lineSeparator());
+    //         }
+    //     } catch (IOException e) {
+    //         e.printStackTrace();
+    //     }
+    // }
 
-    private String serializeUser(User user) {
-        return user.getUsername() + "," +
-                user.getEmail() + "," +
-                user.getPassword() + "," +
-                user.getConfirmPassword() + "," +
-                user.getPhone() + "," +
-                user.getAge() + "," +
-                user.getType() + "," +
-                user.getCity();
-    }
+    // private String serializeUser(User user) {
+    //     return user.getUsername() + "," +
+    //             user.getEmail() + "," +
+    //             user.getPassword() + "," +
+    //             user.getConfirmPassword() + "," +
+    //             user.getPhone() + "," +
+    //             user.getAge() + "," +
+    //             user.getType() + "," +
+    //             user.getCity();
+    // }
 
-    private User deserializeUser(String data) {
-        String[] parts = data.split(",");
-        if (parts.length != 8) {
-            throw new IllegalArgumentException("Invalid user data format: " + data);
-        }
-        try {
-            return new User(parts[0], parts[1], parts[2], parts[3], parts[4], Integer.parseInt(parts[5]), parts[6], parts[7]);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Invalid number format in user data: " + data, e);
-        }
-    }
+    // private User deserializeUser(String data) {
+    //     String[] parts = data.split(",");
+    //     if (parts.length != 8) {
+    //         throw new IllegalArgumentException("Invalid user data format: " + data);
+    //     }
+    //     try {
+    //         return new User(parts[0], parts[1], parts[2], parts[3], parts[4], Integer.parseInt(parts[5]), parts[6], parts[7]);
+    //     } catch (NumberFormatException e) {
+    //         throw new IllegalArgumentException("Invalid number format in user data: " + data, e);
+    //     }
+    // }
 
 
     public static class User {
