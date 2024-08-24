@@ -1,6 +1,6 @@
 package org.example;
 
-import MYApp_Sweet.*;
+import myapp_sweet.*;
 
 import java.util.*;
 
@@ -8,7 +8,9 @@ import java.util.*;
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
     public static void main(String[] args) {
+
         MyApp app = MyApp.getInstance();
+        String uname;
         BusinessAccount businessAccount = BusinessAccount.getInstance();
         Scanner scanner = new Scanner(System.in);
         while (true) {
@@ -16,14 +18,12 @@ public class Main {
 
             String option = scanner.nextLine();
 
-
             switch (option) {
                 case "1":
                     handleSignUp(app, scanner);
                     break;
 
                 case "2":
-
                     handleLogIn(app, scanner);
                     break;
 
@@ -113,13 +113,15 @@ public class Main {
         }
     }
 
+
     private static void handleAdminPage(MyApp app, String username) {
+
         System.out.println("Welcome to the Admin Dashboard.");
         Scanner scanner = new Scanner(System.in);
         ManageOwnerAccountsC account = ManageOwnerAccountsC.getInstance();
         ProfitsAndFinantialReportC finan = ProfitsAndFinantialReportC.getInstance();
         DisplayStatisticsByCityC statsManager = DisplayStatisticsByCityC.getInstance();
-        ManageRecipeC recipeManager=ManageRecipeC.getInstance();
+        ManageRecipeC recipeManager = ManageRecipeC.getInstance();
         statsManager.addUser("Alice", "New York");
         statsManager.addUser("Bob", "Los Angeles");
         statsManager.addUser("Charlie", "New York");
@@ -143,10 +145,10 @@ public class Main {
 
             switch (option) {
                 case "1":
-                    manageOwners(account, scanner);
+                    manageOwners(account, scanner,username);
                     break;
                 case "2":
-                    handleFinancialDashboard(finan);
+                    handleFinancialDashboard(finan,username);
                     break;
                 case "3":
                     displayUserStatisticsByCity(statsManager);
@@ -172,7 +174,7 @@ public class Main {
     }
 
 
-    private static void manageOwners(ManageOwnerAccountsC app, Scanner scanner) {
+    private static void manageOwners(ManageOwnerAccountsC app, Scanner scanner,String username) {
         while (true) {
             System.out.println("Owner Management Menu:");
             System.out.println("1. Add Owner");
@@ -183,6 +185,8 @@ public class Main {
             System.out.print("Please choose an option: ");
 
             String option = scanner.nextLine();
+            MyApp app2=MyApp.getInstance();
+
 
             switch (option) {
                 case "1":
@@ -192,13 +196,13 @@ public class Main {
                     viewProducts(ProductManagement.getInstance());
                     break;
                 case "3":
-                    viewSalesReport(ProductManagement.getInstance());
+                   deleteOwner(app,scanner);
                     break;
                 case "4":
-                    applyDiscount(ProductManagement.getInstance());
+                    viewAllOwners(app);
                     break;
                 case "5":
-                    identifyBestSellingProduct(ProductManagement.getInstance());
+                    handleAdminPage(app2,username);
                     break;
                 case "6":
                     System.out.println("Logging out...");
@@ -339,7 +343,7 @@ public class Main {
     }
 
 
-    private static void handleFinancialDashboard(ProfitsAndFinantialReportC reportManager) {
+    private static void handleFinancialDashboard(ProfitsAndFinantialReportC reportManager,String username) {
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
@@ -371,8 +375,7 @@ public class Main {
                     viewBestSellingProducts(reportManager);
                     break;
                 case "6":
-                    System.out.println("Logging out...");
-                    scanner.close();
+                    handleAdminPage(MyApp.getInstance(),username);
                     return;
                 default:
                     System.out.println("Invalid option. Please choose a valid option.");
@@ -438,6 +441,7 @@ public class Main {
             System.out.println("Store: " + entry.getKey() + ", Best Selling Product: " + entry.getValue());
         }
     }
+
     private static void displayUserStatisticsByCity(DisplayStatisticsByCityC statsManager) {
         Map<String, Integer> statistics = statsManager.gatherStatisticsByCity();
         System.out.println("User Statistics by City:");
@@ -445,6 +449,7 @@ public class Main {
             System.out.println("City: " + entry.getKey() + ", User Count: " + entry.getValue());
         }
     }
+
     private static void manageRecipes(ManageRecipeC recipeManager, Scanner scanner) {
         System.out.println("Manage Recipes:");
         System.out.println("1. Add Recipe");
@@ -642,13 +647,16 @@ public class Main {
     }
 
     private static void handleOwnerPage(MyApp app, String username) {
+
         ProductManagement productManagement = ProductManagement.getInstance();
-        BusinessAccount businessAccount=BusinessAccount.getInstance();
-        PersonalAccount profile=PersonalAccount.getInstance();
-        OrderManagement order=OrderManagement.getInstance();
+
+
+        BusinessAccount businessAccount = BusinessAccount.getInstance();
+        PersonalAccount profile = PersonalAccount.getInstance();
+        OrderManagement order = OrderManagement.getInstance();
         productManagement.setNavagates_to_pmpage(true);
         productManagement.setIs_an_owner(true);
-        CommunicationSys com=CommunicationSys.getInstance();
+        CommunicationSys com = CommunicationSys.getInstance();
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
@@ -670,9 +678,9 @@ public class Main {
             System.out.println("15. Delete Personal Account");
             System.out.println("15. Delete Personal Account");
             System.out.println("16. Handle Orders");
-            System.out.println("17. Log Out");
+            System.out.println("17. Sell Product");
+            System.out.println("18. Log Out");
             System.out.print("Please choose an option: ");
-
             String option = scanner.nextLine();
 
             switch (option) {
@@ -725,6 +733,9 @@ public class Main {
                     handleOrders(order);
                     break;
                 case "17":
+                    sellProduct(productManagement);
+                    break;
+                case "18":
                     System.out.println("Logging out...");
                     productManagement.setNavagates_to_pmpage(false);
                     return;
@@ -858,9 +869,17 @@ public class Main {
     }
 
     private static void viewSalesReport(ProductManagement productManagement) {
-        System.out.println("Total Sales: " + productManagement.calculateTotalSalesRevenue());
-        System.out.println("Total Profit: " + productManagement.getTotalProfit());
+        double totalSalesRevenue = productManagement.calculateTotalSalesRevenue();
+        double totalProfit = productManagement.getTotalProfit();
+
+        System.out.println("Calculated Total Sales Revenue: " + totalSalesRevenue);
+        System.out.println("Calculated Total Profit: " + totalProfit);
+
+        if (totalSalesRevenue < 0 || totalProfit < 0) {
+            System.err.println("Warning: Negative values detected in sales report.");
+        }
     }
+
 
     private static void applyDiscount(ProductManagement productManagement) {
         Scanner scanner = new Scanner(System.in);
@@ -905,7 +924,6 @@ public class Main {
     }
 
 
-
     private static void viewMessages(CommunicationSys com, String username) {
 
         int userId = username.hashCode();
@@ -921,9 +939,9 @@ public class Main {
             }
         }
     }
+
     private static void identifyBestSellingProduct(ProductManagement productManagement) {
         List<ProductManagement.SoldProduct> bestSellingProducts = productManagement.getBestSellingProducts();
-
 
         if (bestSellingProducts.isEmpty()) {
             System.out.println("No products found.");
@@ -931,11 +949,14 @@ public class Main {
             System.out.println("Best-Selling Products:");
             for (ProductManagement.SoldProduct soldProduct : bestSellingProducts) {
                 System.out.println("ID: " + soldProduct.getId() +
-
-                        ", Quantity Sold: " + soldProduct.getQuantitySold());
+                        ", Quantity Sold: " + soldProduct.getQuantitySold() +
+                        ", Total Revenue: " + soldProduct.getTotalrevenue() +
+                        ", Discount Percentage: " + soldProduct.getDiscountPercentage() +
+                        "%, Cost Percentage: " + soldProduct.getCostpercentage() + "%");
             }
         }
     }
+
 
     private static void viewBusinessProfile(BusinessAccount app, String username) {
         BusinessAccount businessAccount = BusinessAccount.getInstance();
@@ -960,9 +981,8 @@ public class Main {
     }
 
 
-
     private static void updateBusinessProfile(BusinessAccount app, String username, Scanner scanner) {
-        BusinessAccount businessAccount=BusinessAccount.getInstance();
+        BusinessAccount businessAccount = BusinessAccount.getInstance();
         int userId = username.hashCode();
         if (businessAccount != null) {
             BusinessAccount.BusinessProfile profile = businessAccount.getProfile(userId);
@@ -991,7 +1011,7 @@ public class Main {
             }
 
             try {
-                businessAccount.updateProfile(userId,address,contact,name);
+                businessAccount.updateProfile(userId, address, contact, name);
                 System.out.println("Business profile updated successfully.");
             } catch (IllegalStateException e) {
                 System.out.println("Error: " + e.getMessage());
@@ -1002,7 +1022,7 @@ public class Main {
     }
 
     private static void deleteBusinessProfile(BusinessAccount app, String username) {
-        BusinessAccount businessAccount=BusinessAccount.getInstance();
+        BusinessAccount businessAccount = BusinessAccount.getInstance();
         int userId = username.hashCode();
         if (businessAccount != null) {
             try {
@@ -1079,7 +1099,7 @@ public class Main {
     private static void deletePersonalAccount(MyApp app, String username) {
         PersonalAccount personalAccount = PersonalAccount.getInstance();
         PersonalAccount.PersonalProfile profile = personalAccount.getProfile(username);
-        int userid=username.hashCode();
+        int userid = username.hashCode();
         if (profile == null) {
             System.out.println("No personal account found for username: " + username);
             return;
@@ -1115,6 +1135,7 @@ public class Main {
                 break;
         }
     }
+
     private static void viewOrders(OrderManagement orderManagement) {
         System.out.println("Orders List:");
         for (OrderManagement.Order order : orderManagement.orders.values()) {
@@ -1135,6 +1156,27 @@ public class Main {
             System.out.println("Error: " + e.getMessage());
         }
     }
+    private static void sellProduct(ProductManagement productManagement) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter product ID to sell: ");
+        int id = Integer.parseInt(scanner.nextLine());
+
+        System.out.print("Enter quantity to sell: ");
+        int quantity = Integer.parseInt(scanner.nextLine());
+
+        System.out.print("Enter cost percentage: ");
+        double costPercentage = Double.parseDouble(scanner.nextLine());
+
+        try {
+            productManagement.sellProduct(id, quantity, costPercentage);
+            System.out.println("Product sold successfully.");
+        } catch (IllegalStateException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+
 
     private static void cancelOrder(OrderManagement order, Scanner scanner) {
         System.out.print("Enter order ID to cancel: ");
@@ -1151,52 +1193,53 @@ public class Main {
     private static void handleUserPage(MyApp app, String username) {
         System.out.println("Welcome to the User Home Page, " + username + ".");
         Scanner scanner = new Scanner(System.in);
-        PersonalAccount pro=PersonalAccount.getInstance();
+        PersonalAccount pro = PersonalAccount.getInstance();
         PersonalAccount.PersonalProfile profile = pro.getProfile(username);
         BeneficiaryUser user = new BeneficiaryUser();
-while (true) {
-    System.out.println("Please choose an option:");
-    System.out.println("1. Manage Account");
-    System.out.println("2. Browse and search for dessert recipes");
-    System.out.println("3. Filter recipes based on dietary needs or food allergies");
-    System.out.println("4. Purchase desserts directly from store owners");
-    System.out.println("5. Communicate with store owners and suppliers");
-    System.out.println("6. Provide feedback on purchased products and shared recipes");
-    System.out.println("7. Exit");
+        while (true) {
+            System.out.println("Please choose an option:");
+            System.out.println("1. Manage Account");
+            System.out.println("2. Browse and search for dessert recipes");
+            System.out.println("3. Filter recipes based on dietary needs or food allergies");
+            System.out.println("4. Purchase desserts directly from store owners");
+            System.out.println("5. Communicate with store owners and suppliers");
+            System.out.println("6. Provide feedback on purchased products and shared recipes");
+            System.out.println("7. Exit");
 
-    int choice = scanner.nextInt();
-    scanner.nextLine();
+            int choice = scanner.nextInt();
+            scanner.nextLine();
 
-    switch (choice) {
-        case 1:
-            manageAccount(app, username);
-            break;
-        case 2:
-            browseAndSearchRecipes(user, scanner);
-            break;
-        case 3:
-            filterRecipesByDietaryNeeds(user, scanner);
-            break;
-        case 4:
-            purchaseDesserts(user, scanner);
-            break;
-        case 5:
-            communicateWithStoreOwners(user, scanner);
-            break;
-        case 6:
-            provideFeedback(user, scanner);
-            break;
-        case 7:
-            System.out.println("Thank you for using Sweet Pal. Goodbye!");
-            return;
-        default:
-            System.out.println("Invalid choice. Please try again.");
+            switch (choice) {
+                case 1:
+                    manageAccount(app, username);
+                    break;
+                case 2:
+                    browseAndSearchRecipes(user, scanner);
+                    break;
+                case 3:
+                    filterRecipesByDietaryNeeds(user, scanner);
+                    break;
+                case 4:
+                    purchaseDesserts(user, scanner);
+                    break;
+                case 5:
+                    communicateWithStoreOwners(user, scanner);
+                    break;
+                case 6:
+                    provideFeedback(user, scanner);
+                    break;
+                case 7:
+                    System.out.println("Thank you for using Sweet Pal. Goodbye!");
+                    return;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
     }
-}
-    }
+
     private static void manageAccount(MyApp app, String username) {
         Scanner scanner = new Scanner(System.in);
-        PersonalAccount pro=PersonalAccount.getInstance();
+        PersonalAccount pro = PersonalAccount.getInstance();
         PersonalAccount.PersonalProfile profile = pro.getProfile(username);
         System.out.println("Account Management:");
         System.out.println("1. View Account");
@@ -1223,8 +1266,19 @@ while (true) {
                 break;
         }
     }
-    private static void browseAndSearchRecipes(BeneficiaryUser user, Scanner scanner) { user.addRecipe(new Recipe("Chocolate Cake", "Cakes", "Delicious chocolate cake", 45 , "Medium", 5.0, "None", "Vegan")); user.addRecipe(new Recipe("Apple Pie", "Pies", "Classic apple pie", 60 , "Hard", 4.0, "Apples", "Vegetarian")); System.out.println("Enter the category to browse:"); String category = scanner.nextLine(); Recipe recipe = user.clickBrowseAllRecipes(category); if (recipe != null) { System.out.println("Found recipe: " + recipe.getSweetname() + " - " + recipe.getDescription()); } else { System.out.println("No recipes found in this category.");
-    }}
+
+    private static void browseAndSearchRecipes(BeneficiaryUser user, Scanner scanner) {
+        user.addRecipe(new Recipe("Chocolate Cake", "Cakes", "Delicious chocolate cake", 45, "Medium", 5.0, "None", "Vegan"));
+        user.addRecipe(new Recipe("Apple Pie", "Pies", "Classic apple pie", 60, "Hard", 4.0, "Apples", "Vegetarian"));
+        System.out.println("Enter the category to browse:");
+        String category = scanner.nextLine();
+        Recipe recipe = user.clickBrowseAllRecipes(category);
+        if (recipe != null) {
+            System.out.println("Found recipe: " + recipe.getSweetname() + " - " + recipe.getDescription());
+        } else {
+            System.out.println("No recipes found in this category.");
+        }
+    }
 
 
     private static void filterRecipesByDietaryNeeds(BeneficiaryUser user, Scanner scanner) {
