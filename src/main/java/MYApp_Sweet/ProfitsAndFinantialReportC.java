@@ -21,9 +21,9 @@ public class ProfitsAndFinantialReportC {
     private static final Logger logger = Logger.getLogger(ProfitsAndFinantialReportC.class.getName());
     private static final String REPORT_FILE = "reports.txt";
 
-    private ProfitsAndFinantialReportC() {
-        loadReports();
-    }
+    // private ProfitsAndFinantialReportC() {
+    //     loadReports();
+    // }
 
     public static ProfitsAndFinantialReportC getInstance() {
         if (instance == null) {
@@ -33,44 +33,44 @@ public class ProfitsAndFinantialReportC {
     }
 
 
-    private void loadReports() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(REPORT_FILE))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length == 6) {
-                    String store = parts[0].trim();
-                    int productId = Integer.parseInt(parts[1].trim());
-                    String productName = parts[2].trim();
-                    int quantitySold = Integer.parseInt(parts[3].trim());
-                    double saleAmount = Double.parseDouble(parts[4].trim());
-                    double profitAmount = Double.parseDouble(parts[5].trim());
+    // private void loadReports() {
+    //     try (BufferedReader reader = new BufferedReader(new FileReader(REPORT_FILE))) {
+    //         String line;
+    //         while ((line = reader.readLine()) != null) {
+    //             String[] parts = line.split(",");
+    //             if (parts.length == 6) {
+    //                 String store = parts[0].trim();
+    //                 int productId = Integer.parseInt(parts[1].trim());
+    //                 String productName = parts[2].trim();
+    //                 int quantitySold = Integer.parseInt(parts[3].trim());
+    //                 double saleAmount = Double.parseDouble(parts[4].trim());
+    //                 double profitAmount = Double.parseDouble(parts[5].trim());
 
-                    Sale sale = new Sale(productId, productName, quantitySold, saleAmount, profitAmount);
-                    List<Sale> salesList = storeSales.computeIfAbsent(store, k -> new ArrayList<>());
-                    salesList.add(sale);
-                } else {
-                    logger.warning("Invalid report data format: " + line);
-                }
-            }
-        } catch (IOException e) {
-            logger.severe("Error loading reports: " + e.getMessage());
-        }
-    }
+    //                 Sale sale = new Sale(productId, productName, quantitySold, saleAmount, profitAmount);
+    //                 List<Sale> salesList = storeSales.computeIfAbsent(store, k -> new ArrayList<>());
+    //                 salesList.add(sale);
+    //             } else {
+    //                 logger.warning("Invalid report data format: " + line);
+    //             }
+    //         }
+    //     } catch (IOException e) {
+    //         logger.severe("Error loading reports: " + e.getMessage());
+    //     }
+    // }
 
     // Save reports to a file
-    private void saveReports() {
-        try (FileWriter writer = new FileWriter(REPORT_FILE)) {
-            for (Map.Entry<String, List<Sale>> entry : storeSales.entrySet()) {
-                String store = entry.getKey();
-                for (Sale sale : entry.getValue()) {
-                    writer.write(serializeSale(store, sale) + System.lineSeparator());
-                }
-            }
-        } catch (IOException e) {
-            logger.severe("Error saving reports: " + e.getMessage());
-        }
-    }
+    // private void saveReports() {
+    //     try (FileWriter writer = new FileWriter(REPORT_FILE)) {
+    //         for (Map.Entry<String, List<Sale>> entry : storeSales.entrySet()) {
+    //             String store = entry.getKey();
+    //             for (Sale sale : entry.getValue()) {
+    //                 writer.write(serializeSale(store, sale) + System.lineSeparator());
+    //             }
+    //         }
+    //     } catch (IOException e) {
+    //         logger.severe("Error saving reports: " + e.getMessage());
+    //     }
+    // }
 
     // Serialize a Sale object into a comma-separated string
     private String serializeSale(String store, Sale sale) {
@@ -99,7 +99,7 @@ public class ProfitsAndFinantialReportC {
 
         sellingPrices.put(String.valueOf(product.getProductId()), 0.0);
         costPrices.put(String.valueOf(product.getProductId()), 0.0);
-        saveReports();
+        // saveReports();
         logger.info("Product with ID: " + product.getProductId() + " added successfully.");
     }
 
@@ -120,7 +120,7 @@ public class ProfitsAndFinantialReportC {
         Sale sale = new Sale(productId, productName, quantitySold, saleAmount, profitAmount);
         List<Sale> salesList = storeSales.computeIfAbsent(store, k -> new ArrayList<>());
         salesList.add(sale);
-        saveReports();
+        // saveReports();
         logger.info("Sale recorded: " + productName + " - Quantity: " + quantitySold);
     }
 
@@ -166,7 +166,7 @@ public class ProfitsAndFinantialReportC {
         Map<String, Double> report = new HashMap<>();
         report.put("Total Sales", calculateTotalSales());
         report.put("Total Profit", getTotalProfit());
-        saveReports();
+        // saveReports();
         return report;
     }
 
