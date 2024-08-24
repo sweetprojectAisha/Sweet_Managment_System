@@ -13,7 +13,7 @@ public class PersonalAccount {
     private static PersonalAccount instance;
     private Map<String, PersonalProfile> profiles = new HashMap<>();
 //    private static Map<String, PersonalAccount.PersonalProfile> users=new HashMap<>();
-    private static final String USER_FILE = "userprofiles.txt";
+    private static final String USER_FILE = "users.txt";
     public static PersonalAccount getInstance() {
 
         if (instance == null) {
@@ -55,13 +55,13 @@ public class PersonalAccount {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts.length == 4) { // Adjusted length to match serialized format
+                if (parts.length >= 6) {  // Ensure there are enough parts to extract name, email, phone, and age
                     String name = parts[0].trim();
                     String email = parts[1].trim();
-                    String phone = parts[2].trim();
+                    String phone = parts[4].trim();
                     int age;
                     try {
-                        age = Integer.parseInt(parts[3].trim());
+                        age = Integer.parseInt(parts[5].trim());
                     } catch (NumberFormatException e) {
                         System.out.println("Invalid age format for profile: " + name);
                         continue;
@@ -78,6 +78,7 @@ public class PersonalAccount {
             e.printStackTrace();
         }
     }
+
 
 
     private void saveProfiles() {
